@@ -74,6 +74,38 @@ describe('skladka', () => {
 	});
 });
 
+describe('pakiety dodatkowe', () => {
+	it('każdy kod świadczenia pakietu ma etykietę (nie surowy kod)', async () => {
+		const { tabelaPakietu } = await import('./pakiety');
+		for (const p of db.pakiety_dodatkowe) {
+			for (const w of tabelaPakietu(db, p)) {
+				expect(w.etykieta, `brak etykiety dla ${w.kod} (${p.slug})`).not.toBe(w.kod);
+				expect(w.wartosci).toHaveLength(3);
+			}
+		}
+	});
+
+	it('formatuje kwoty, dniówki i pozycje bezkwotowe', async () => {
+		const { tabelaPakietu } = await import('./pakiety');
+		const zdrowie = db.pakiety_dodatkowe.find((p) => p.slug === 'zdrowie-5')!;
+		const wiersze = tabelaPakietu(db, zdrowie);
+		const szpital = wiersze.find((w) => w.kod === 'szpital_choroba_90')!;
+		expect(szpital.wartosci[0]).toBe('40 zł / dzień');
+		expect(szpital.dni).toBe('1–90');
+		const assist = wiersze.find((w) => w.kod === 'assistance_chorobowy')!;
+		expect(assist.wartosci).toEqual(['✓ w pakiecie', '✓ w pakiecie', '✓ w pakiecie']);
+		const pz = wiersze.find((w) => w.kod === 'pz_max')!;
+		expect(pz.wartosci[2]).toMatch(/^do 20/);
+	});
+
+	it('mapowanie marketing→cennik wskazuje istniejące pakiety', async () => {
+		const { MAPA_MARKETING_CENNIK } = await import('./pakiety');
+		for (const slug of Object.values(MAPA_MARKETING_CENNIK)) {
+			expect(db.pakiety_dodatkowe.some((p) => p.slug === slug), slug).toBe(true);
+		}
+	});
+});
+
 describe('pesel', () => {
 	it('suma kontrolna', () => {
 		expect(peselPoprawny('85031255515')).toBe(true);

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { stan, DB } from './stan.svelte';
 	import { formatujZl, RZYMSKIE } from '$lib/domena/skladka';
+	import { tabelaPakietu } from '$lib/domena/pakiety';
 	import type { WariantIdx } from '$lib/domena/typy';
 
 	const gdInfo = DB.global_doctors;
@@ -102,11 +103,17 @@
 		<div
 			class="add"
 			class:sel={wybrany}
-			onclick={() => przelaczPakiet(p.slug)}
+			onclick={(e) => {
+				if ((e.target as HTMLElement).closest('.swdet')) return;
+				przelaczPakiet(p.slug);
+			}}
 			role="checkbox"
 			aria-checked={wybrany}
 			tabindex="0"
-			onkeydown={(e) => e.key === 'Enter' && przelaczPakiet(p.slug)}
+			onkeydown={(e) => {
+				if ((e.target as HTMLElement).closest('.swdet')) return;
+				if (e.key === 'Enter') przelaczPakiet(p.slug);
+			}}
 		>
 			<span class="cb">{wybrany ? '✓' : ''}</span>
 			<span class="bd">
@@ -115,6 +122,32 @@
 					<small style="color:var(--warn)">⚠ Niezgodny z pakietem głównym (5 podgrup operacji).</small>
 				{/if}
 				{#if p.uwaga}<small>{p.uwaga}</small>{/if}
+				<details class="swdet">
+					<summary>świadczenia i sumy w wariantach</summary>
+					<table>
+						<thead>
+							<tr>
+								<th>Świadczenie</th>
+								{#each [0, 1, 2] as const as i (i)}
+									<th class:hl={wybrany && wi === i}>W{RZYMSKIE[i]}</th>
+								{/each}
+							</tr>
+						</thead>
+						<tbody>
+							{#each tabelaPakietu(DB, p) as w (w.kod)}
+								<tr>
+									<td>
+										{w.etykieta}
+										{#if w.dni}<span class="dni">(dni {w.dni})</span>{/if}
+									</td>
+									{#each w.wartosci as v, i (i)}
+										<td class="v" class:hl={wybrany && wi === i} class:no={v === '—'}>{v}</td>
+									{/each}
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</details>
 				<span class="vsel">
 					{#each [0, 1, 2] as const as i (i)}
 						<button
@@ -249,6 +282,51 @@
 		color: #9a9a9a;
 		text-decoration: none;
 		text-align: right;
+	}
+	.swdet {
+		margin-top: 8px;
+	}
+	.swdet summary {
+		list-style: none;
+		cursor: pointer;
+		color: var(--red);
+		font-size: 12px;
+		text-decoration: underline;
+	}
+	.swdet summary::-webkit-details-marker {
+		display: none;
+	}
+	.swdet summary::after {
+		content: ' ▾';
+		text-decoration: none;
+	}
+	.swdet[open] summary::after {
+		content: ' ▴';
+	}
+	.swdet table {
+		margin-top: 8px;
+		font-size: 12px;
+		border: 1px solid var(--line);
+	}
+	.swdet th,
+	.swdet td {
+		padding: 6px 8px;
+	}
+	.swdet td.v {
+		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
+	}
+	.swdet .hl {
+		color: var(--red);
+		font-weight: 700;
+	}
+	.swdet td.no {
+		color: #cfcfcf;
+		font-weight: 400;
+	}
+	.dni {
+		color: #aaa;
+		font-size: 10px;
 	}
 	.vsel {
 		display: flex;

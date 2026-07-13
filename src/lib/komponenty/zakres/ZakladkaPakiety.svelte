@@ -1,6 +1,11 @@
 <script lang="ts">
 	import marketing from '$lib/dane/zakres-marketing.json';
-	import { formatujZl } from '$lib/domena/skladka';
+	import produkty from '$lib/dane/produkty.json';
+	import type { Produkty } from '$lib/domena/typy';
+	import { formatujZl, RZYMSKIE } from '$lib/domena/skladka';
+	import { tabelaPakietu, MAPA_MARKETING_CENNIK, type WierszPakietu } from '$lib/domena/pakiety';
+
+	const db = produkty as unknown as Produkty;
 
 	interface Pakiet {
 		slug: string;
@@ -45,6 +50,27 @@
 		if (sk) return `${formatujZl(sk[0])} – ${formatujZl(sk[2])}`;
 		if (p.skladka) return formatujZl(p.skladka);
 		return null;
+	}
+
+	interface Sumy {
+		wiersze: WierszPakietu[];
+		skladki: [number, number, number];
+		obieWersje: boolean;
+	}
+
+	/** Tabela sum ubezpieczenia z cennika dla pakietu marketingowego. */
+	function sumy(p: Pakiet): Sumy | null {
+		const slug = MAPA_MARKETING_CENNIK[p.slug];
+		if (!slug) return null;
+		const cennikowy = db.pakiety_dodatkowe.find((x) => x.slug === slug);
+		if (!cennikowy) return null;
+		return {
+			wiersze: tabelaPakietu(db, cennikowy),
+			skladki: cennikowy.skladka,
+			obieWersje:
+				slug.endsWith('-5') &&
+				db.pakiety_dodatkowe.some((x) => x.slug === slug.replace(/-5$/, '-3'))
+		};
 	}
 
 	function listy(p: Pakiet): [string, string[]][] {
@@ -113,6 +139,41 @@
 			{/if}
 			{#if p.LUKA}
 				<div class="gap pelna" style="margin:0"><b>Luka w danych</b>{p.LUKA}</div>
+			{/if}
+			{#if sumy(p)}
+				{@const s = sumy(p)!}
+				<div class="pelna">
+					<h4>Świadczenia i sumy ubezpieczenia (cennik do 31.12.2026)</h4>
+					<table>
+						<thead>
+							<tr>
+								<th style="text-align:left">Świadczenie</th>
+								{#each [0, 1, 2] as const as i (i)}
+									<th>Wariant {RZYMSKIE[i]}<br /><small class="skl">{formatujZl(s.skladki[i])} / os. / mies.</small></th>
+								{/each}
+							</tr>
+						</thead>
+						<tbody>
+							{#each s.wiersze as w (w.kod)}
+								<tr>
+									<td>
+										{w.etykieta}
+										{#if w.dni}<span class="dni">(dni {w.dni})</span>{/if}
+									</td>
+									{#each w.wartosci as v, i (i)}
+										<td class="v" class:no={v === '—'}>{v}</td>
+									{/each}
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+					{#if s.obieWersje}
+						<p class="drobne" style="margin-top:8px">
+							Sumy są wspólne dla wersji 5- i 3-podgrupowej — różni się tylko składka i sposób
+							rozliczania operacji.
+						</p>
+					{/if}
+				</div>
 			{/if}
 			{#each listy(p) as [tytul, pozycje] (tytul)}
 				<div>
@@ -248,6 +309,24 @@
 	.drobne {
 		font-size: 12.5px;
 		color: #8a8a8a;
+	}
+	.skl {
+		font-weight: 400;
+		color: #9a9a9a;
+		font-size: 10.5px;
+		text-transform: none;
+		letter-spacing: 0;
+	}
+	td.v {
+		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
+	}
+	td.no {
+		color: #cfcfcf;
+	}
+	.dni {
+		color: #aaa;
+		font-size: 11px;
 	}
 	@media (max-width: 900px) {
 		.bd {
