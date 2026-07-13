@@ -58,9 +58,7 @@
 		stan.zapisz();
 	}
 
-	const za100 = $derived(
-		stan.gus?.klasa_wielkosci ? /250|1000|\+/.test(stan.gus.klasa_wielkosci) : false
-	);
+	const zawieszona = $derived(!!stan.gus?.data_zawieszenia);
 </script>
 
 <div class="eyebrow">Krok 5</div>
@@ -111,16 +109,12 @@
 					</dd>
 				</dl>
 			{/if}
-			{#if stan.gus.forma}<dl><dt>Forma prawna</dt><dd>{stan.gus.forma}</dd></dl>{/if}
-			{#if stan.gus.klasa_wielkosci}
-				<dl><dt>Klasa wielkości (GUS)</dt><dd>{stan.gus.klasa_wielkosci}</dd></dl>
-			{/if}
 		</div>
 	</div>
-	{#if za100}
-		<div class="warnbox">
-			<b>GUS podaje klasę wielkości powyżej progu programu.</b> Program obejmuje 2–100 osób. Jeśli
-			ubezpieczasz mniejszą grupę (np. jeden oddział), opiekun to potwierdzi.
+	{#if zawieszona}
+		<div class="warnbox red">
+			<b>GUS podaje, że działalność jest zawieszona od {stan.gus.data_zawieszenia}.</b>
+			Program jest dla firm aktywnych — opiekun zweryfikuje status przed wystawieniem polisy.
 		</div>
 	{/if}
 {/if}

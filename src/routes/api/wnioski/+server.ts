@@ -46,6 +46,7 @@ const schemat = z.object({
 		adres: z.string().max(300).optional(),
 		pkd_kod: z.string().max(10).optional(),
 		pkd_opis: z.string().max(300).optional(),
+		data_zawieszenia: z.string().max(10).optional(),
 		zrodlo: z.enum(['gus', 'recznie'])
 	}),
 	kontakt: z.object({

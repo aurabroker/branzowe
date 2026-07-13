@@ -16,8 +16,7 @@ export interface DaneGus {
 	adres?: string;
 	pkd_kod?: string;
 	pkd_opis?: string;
-	forma?: string;
-	klasa_wielkosci?: string;
+	data_zawieszenia?: string;
 	zrodlo: 'gus' | 'recznie';
 }
 
