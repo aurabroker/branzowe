@@ -1,0 +1,10 @@
+node_modules/
+.svelte-kit/
+.wrangler/
+build/
+dist/
+.env
+.env.*
+!.env.example
+static/dane/owu/
+vite.config.ts.timestamp-*
