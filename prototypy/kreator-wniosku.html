@@ -1,0 +1,799 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+  :root{
+    --red:#C11F31; --red-dark:#9E1827; --ink:#1A1A1A; --gray:#4A4A4A;
+    --line:#DEDEDE; --surf:#F4F4F4; --surf2:#F9F9F7; --white:#fff;
+    --ok:#1B7F4C; --warn:#B26A00; --warn-bg:#FFF6E6;
+    --radius:2px;
+    --font:'Roboto',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  .eh{font-family:var(--font);color:var(--ink);background:var(--white);line-height:1.5;font-size:15px;padding-bottom:96px}
+  .eh button{font-family:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header ---------- */
+  .top{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:40}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{line-height:.9}
+  .logo b{display:block;color:var(--red);font-weight:900;font-size:22px;letter-spacing:-.5px}
+  .logo span{display:block;font-size:13px;letter-spacing:2.5px;color:var(--gray);font-weight:400}
+  .top .meta{font-size:12px;color:var(--gray);text-align:right}
+  .top .meta b{color:var(--ink);font-weight:500}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;background:#111;color:#fff;overflow:hidden}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+  .hero .wrap{position:relative;padding-top:76px;padding-bottom:76px;max-width:1120px}
+  .hero h1{font-size:clamp(30px,4.4vw,50px);font-weight:900;letter-spacing:-1px;line-height:1.05;max-width:15ch}
+  .hero h1 em{font-style:normal;color:#FF6B7A}
+  .hero p{margin-top:16px;max-width:52ch;font-size:17px;color:#EDEDED;font-weight:300}
+  .rule{width:96px;height:5px;background:var(--red);margin:22px 0 0;border-radius:3px}
+  .facts{display:flex;gap:32px;margin-top:32px;flex-wrap:wrap}
+  .fact b{display:block;font-size:26px;font-weight:900}
+  .fact span{font-size:12px;color:#CFCFCF;text-transform:uppercase;letter-spacing:1px}
+
+  /* ---------- stepper ---------- */
+  .stepper{border-bottom:1px solid var(--line);background:var(--surf2);position:sticky;top:64px;z-index:30}
+  .stepper .wrap{display:flex;gap:2px;overflow-x:auto}
+  .stepper i{font-style:normal;display:flex;align-items:center;gap:8px;padding:14px 18px 12px;font-size:13px;color:#9A9A9A;white-space:nowrap;border-bottom:3px solid transparent}
+  .stepper i b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#DCDCDC;color:#fff;font-size:11px;font-weight:700}
+  .stepper i.on{color:var(--ink);border-bottom-color:var(--red);font-weight:500}
+  .stepper i.on b{background:var(--red)}
+  .stepper i.done b{background:var(--ok)}
+  .stepper i.done{color:var(--gray);cursor:pointer}
+
+  /* ---------- generic ---------- */
+  section.step{padding:48px 0 32px;display:none}
+  section.step.on{display:block;animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  h2.t{font-size:30px;font-weight:900;letter-spacing:-.6px}
+  h2.t + p.sub{color:var(--gray);margin-top:8px;max-width:66ch}
+  .eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:10px}
+  .btn{border:0;background:var(--red);color:#fff;font-weight:500;font-size:15px;padding:13px 26px;border-radius:var(--radius);cursor:pointer;transition:.15s}
+  .btn:hover{background:var(--red-dark)}
+  .btn:disabled{background:#CFCFCF;cursor:not-allowed}
+  .btn.ghost{background:transparent;color:var(--gray);border:1px solid var(--line)}
+  .btn.ghost:hover{background:var(--surf);color:var(--ink)}
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}
+  .note{background:var(--surf2);border-left:3px solid var(--red);padding:14px 16px;font-size:13px;color:var(--gray);margin-top:24px}
+  .note b{color:var(--ink)}
+  .warnbox{background:var(--warn-bg);border-left:3px solid var(--warn);padding:14px 16px;font-size:13.5px;margin-top:16px}
+
+  /* ---------- 1. branże ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
+  .tile{border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left;padding:0;overflow:hidden;transition:.18s;position:relative}
+  .tile:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.09)}
+  .tile.sel{border-color:var(--red);box-shadow:0 0 0 2px var(--red) inset}
+  .tile .ph{aspect-ratio:4/3;overflow:hidden;background:var(--surf)}
+  .tile .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:.4s}
+  .tile:hover .ph img{transform:scale(1.05)}
+  .tile .b{padding:14px 14px 16px}
+  .tile .b strong{display:block;font-size:15px;font-weight:700}
+  .tile .b small{display:block;color:#8A8A8A;font-size:12px;margin-top:3px;line-height:1.35;min-height:32px}
+  .tile .b .px{margin-top:10px;font-size:12px;color:var(--gray);border-top:1px solid var(--line);padding-top:9px}
+  .tile .b .px b{color:var(--red);font-weight:700;font-size:15px}
+  .nipcard{grid-column:span 4;border:1px dashed var(--line);background:var(--surf2);padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .nipcard div strong{display:block}
+  .nipcard div small{color:var(--gray)}
+
+  /* ---------- 2. warianty ---------- */
+  .vars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+  .var{border:1px solid var(--line);padding:22px;cursor:pointer;background:#fff;transition:.18s;position:relative;text-align:left}
+  .var:hover{border-color:#B9B9B9}
+  .var.sel{border-color:var(--red);box-shadow:0 0 0 2px var(--red) inset}
+  .var .rb{position:absolute;top:20px;right:20px;width:18px;height:18px;border:2px solid var(--line);border-radius:50%}
+  .var.sel .rb{border-color:var(--red);background:radial-gradient(circle,var(--red) 45%,transparent 47%)}
+  .var h3{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);font-weight:700}
+  .var .price{margin:12px 0 4px;font-size:38px;font-weight:900;letter-spacing:-1.5px}
+  .var .price s{font-size:15px;font-weight:400;text-decoration:none;color:var(--gray);letter-spacing:0}
+  .var .cnt{font-size:12px;color:#8A8A8A;padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .var ul{list-style:none;margin-top:14px}
+  .var li{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px dotted #EAEAEA}
+  .var li span{color:var(--gray)}
+  .var li b{white-space:nowrap;font-weight:700}
+  .var li.na b{color:#C4C4C4;font-weight:400}
+
+  details.full{margin-top:22px;border:1px solid var(--line)}
+  details.full summary{padding:14px 18px;cursor:pointer;font-weight:500;font-size:14px;background:var(--surf2);list-style:none;display:flex;justify-content:space-between}
+  details.full summary::after{content:'pokaż ▾';color:var(--red);font-size:12px}
+  details.full[open] summary::after{content:'ukryj ▴'}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid #EFEFEF}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--gray);position:sticky;top:0}
+  tr.grp td{background:var(--surf);font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:1px;color:var(--gray)}
+  td.k{font-size:11px;color:#9A9A9A}
+  td.v{font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.v.hl{color:var(--red);font-weight:700}
+  td.v.no{color:#CFCFCF}
+  .tblwrap{max-height:520px;overflow:auto}
+
+  /* ---------- 3. rozszerzenia ---------- */
+  .addgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
+  .add{border:1px solid var(--line);padding:16px 18px;display:flex;gap:14px;align-items:flex-start;background:#fff;cursor:pointer}
+  .add.sel{border-color:var(--red);background:#FEF7F8}
+  .add .cb{flex:0 0 20px;width:20px;height:20px;border:2px solid var(--line);border-radius:2px;margin-top:2px;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:700}
+  .add.sel .cb{background:var(--red);border-color:var(--red)}
+  .add .bd{flex:1}
+  .add .bd strong{display:block;font-size:14.5px}
+  .add .bd small{display:block;color:var(--gray);font-size:12.5px;margin-top:3px;line-height:1.4}
+  .add .pr{font-weight:900;white-space:nowrap;font-size:15px}
+  .add .pr s{display:block;font-size:10px;font-weight:400;color:#9A9A9A;text-decoration:none;text-align:right}
+  .vsel{display:flex;gap:4px;margin-top:10px}
+  .vsel button{flex:1;border:1px solid var(--line);background:#fff;font-size:11px;padding:5px 2px;cursor:pointer;color:var(--gray)}
+  .vsel button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  h3.sec{margin-top:36px;font-size:16px;font-weight:700;display:flex;align-items:center;gap:10px}
+  h3.sec:after{content:'';flex:1;height:1px;background:var(--line)}
+  h3.sec small{font-weight:400;color:var(--gray);font-size:12.5px}
+
+  .fin{display:flex;gap:0;margin-top:18px;border:1px solid var(--line);width:fit-content}
+  .fin button{border:0;background:#fff;padding:9px 18px;font-size:13px;cursor:pointer;color:var(--gray);border-right:1px solid var(--line)}
+  .fin button:last-child{border-right:0}
+  .fin button.on{background:var(--ink);color:#fff}
+
+  /* ---------- 4. firma ---------- */
+  .form{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:26px;max-width:760px}
+  .f{display:flex;flex-direction:column;gap:6px}
+  .f.wide{grid-column:span 2}
+  .f label{font-size:12.5px;font-weight:500}
+  .f label i{font-style:normal;color:var(--red)}
+  .f input,.f select{border:1px solid var(--line);padding:11px 12px;font-size:15px;font-family:inherit;border-radius:var(--radius);background:#fff}
+  .f input:focus,.f select:focus{outline:2px solid var(--red);outline-offset:-1px;border-color:var(--red)}
+  .f small.err{color:var(--red);font-size:12px;display:none}
+  .f.bad input{border-color:var(--red)}
+  .f.bad small.err{display:block}
+  .nipRow{display:flex;gap:8px}
+  .nipRow input{flex:1}
+  .gus{margin-top:20px;border:1px solid var(--line);max-width:760px}
+  .gus .hd{background:var(--surf);padding:10px 16px;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gray);font-weight:700;display:flex;justify-content:space-between;align-items:center}
+  .gus .bd{padding:18px 16px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .gus dl dt{font-size:11px;color:#9A9A9A;text-transform:uppercase;letter-spacing:.6px}
+  .gus dl dd{font-size:14.5px;font-weight:500;margin-top:2px}
+  .pill{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700}
+  .pill.ok{background:#E7F5EC;color:var(--ok)}
+  .pill.warn{background:var(--warn-bg);color:var(--warn)}
+  .simrow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray);margin-top:12px}
+  .simrow select{border:1px solid var(--line);padding:5px 8px;font-size:12px;font-family:inherit}
+
+  /* ---------- 5. zgody ---------- */
+  .cons{max-width:820px;margin-top:24px}
+  .crow{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #EFEFEF;align-items:flex-start}
+  .crow input{margin-top:3px;width:17px;height:17px;accent-color:var(--red);flex:0 0 17px}
+  .crow .tx{flex:1;font-size:13.5px}
+  .crow .tx i{font-style:normal;color:var(--red)}
+  .crow .tx button{background:0;border:0;color:var(--red);font-size:12px;cursor:pointer;text-decoration:underline;padding:4px 0 0}
+  .crow .tx p{display:none;margin-top:8px;font-size:12.5px;color:var(--gray);background:var(--surf2);padding:12px;line-height:1.55}
+  .crow.open .tx p{display:block}
+  .sumcard{border:1px solid var(--line);padding:22px;background:var(--surf2);max-width:820px;margin-top:24px}
+  .sumcard h4{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:14px}
+  .sumcard .r{display:flex;justify-content:space-between;padding:7px 0;font-size:14px;border-bottom:1px dotted #E0E0E0}
+  .sumcard .r.tot{border:0;border-top:2px solid var(--ink);margin-top:8px;padding-top:12px;font-size:19px;font-weight:900}
+
+  /* ---------- 6. sukces ---------- */
+  .done{text-align:center;padding:60px 0}
+  .done .ic{width:64px;height:64px;border-radius:50%;background:#E7F5EC;color:var(--ok);display:grid;place-items:center;margin:0 auto 22px;font-size:32px}
+  .done h2{font-size:32px;font-weight:900}
+  .done p{color:var(--gray);max-width:56ch;margin:12px auto 0}
+  .xls{max-width:560px;margin:32px auto 0;border:1px solid var(--line);padding:18px;display:flex;gap:14px;align-items:center;text-align:left}
+  .xls .ix{width:44px;height:44px;background:#1D6F42;color:#fff;display:grid;place-items:center;font-weight:900;font-size:12px;flex:0 0 44px}
+  .xls strong{display:block;font-size:14px}
+  .xls small{color:var(--gray);font-size:12.5px}
+
+  /* ---------- premium bar ---------- */
+  .bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink);color:#fff;z-index:50;transform:translateY(110%);transition:.3s cubic-bezier(.2,.8,.2,1)}
+  .bar.on{transform:none}
+  .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+  .bar .l{display:flex;gap:34px;align-items:center;flex-wrap:wrap}
+  .bar .m span{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:#9C9C9C}
+  .bar .m b{font-size:23px;font-weight:900;letter-spacing:-.5px}
+  .bar .m b em{font-style:normal;font-size:13px;font-weight:400;color:#B5B5B5}
+  .bar .m.hi b{color:#FF6B7A}
+  .bar .br{background:0;border:0;color:#B5B5B5;font-size:11.5px;text-decoration:underline;cursor:pointer;padding:0}
+  .bd2{max-height:0;overflow:hidden;transition:.3s;background:#252525}
+  .bd2.on{max-height:340px}
+  .bd2 .wrap{padding:16px 24px}
+  .bd2 .r{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:#D5D5D5}
+  .bd2 .r b{color:#fff}
+
+  @media(max-width:900px){
+    .tiles{grid-template-columns:repeat(2,1fr)}.nipcard{grid-column:span 2}
+    .vars{grid-template-columns:1fr}.addgrid,.form,.gus .bd{grid-template-columns:1fr}
+    .f.wide{grid-column:span 1}
+    .bar .l{gap:18px}.bar .m b{font-size:19px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="eh">
+  <header class="top">
+    <div class="wrap">
+      <div class="logo"><b>ERGO</b><span>HESTIA</span></div>
+      <div class="meta">Grupowe ubezpieczenie na życie · <b style="color:var(--red)">2–100 osób</b><br><b>ERGO Życie w Biznesie</b> · oferta branżowa 1.07–31.12.2026</div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <img src="https://www.trybloom.ai/img/1dc003fd-e9fd-4b4a-b7fd-bf72ce6654b9" alt="">
+    <div class="wrap">
+      <div style="display:inline-flex;align-items:center;gap:10px;background:var(--red);color:#fff;font-weight:700;font-size:14px;padding:10px 20px;margin-bottom:20px;letter-spacing:.3px">Program dla firm zatrudniających <b style="font-size:19px;font-weight:900">od 2 do 100 osób</b></div>
+      <h1>Ochrona wpisana w <em>życie firmy</em></h1>
+      <p>Wybierz branżę — pokażemy wyłącznie te warunki, które Twoja firma może dostać. Bez kalkulatora ogólnego, bez „skontaktuj się po wycenę”.</p>
+      <div class="rule"></div>
+      <div class="facts">
+        <div class="fact"><b>2–100</b><span>osób w firmie</span></div>
+        <div class="fact"><b>8</b><span>programów branżowych</span></div>
+        <div class="fact"><b>124</b><span>świadczenia</span></div>
+        <div class="fact"><b>od 58 zł</b><span>za osobę / miesiąc</span></div>
+        <div class="fact"><b>1 dzień</b><span>do wypłaty świadczenia</span></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="stepper"><div class="wrap" id="stp"></div></nav>
+
+  <main class="wrap">
+
+    <!-- 1 -->
+    <section class="step on" data-s="1">
+      <div class="eyebrow">Krok 1</div>
+      <h2 class="t">Jaka to branża?</h2>
+      <p class="sub">Składki i zakres różnią się między branżami — to nie jest jeden cennik z rabatem. Wybierz swoją, a zobaczysz dokładnie te trzy warianty, które ERGO Hestia oferuje firmom z Twoim PKD.</p>
+      <div class="warnbox" style="margin-top:18px;background:#FDECEE;border-left-color:var(--red)"><b>Zanim wybierzesz branżę:</b> program działa wyłącznie dla firm zatrudniających <b>od 2 do 100 osób</b>, w wieku 15–70 lat. Poniżej i powyżej tego progu opiekun przygotuje ofertę indywidualną.</div>
+      <div class="tiles" id="tiles"></div>
+      <div class="note"><b>Nie ma Twojej branży?</b> Oferta branżowa obejmuje wybrane kody PKD. Dla pozostałych firm przygotujemy ofertę standardową — <a href="#" style="color:var(--red)">zostaw kontakt</a>.</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="step" data-s="2">
+      <div class="eyebrow">Krok 2 · <span id="brName"></span></div>
+      <h2 class="t">Wybierz wariant</h2>
+      <p class="sub" id="varSub"></p>
+      <div id="varWarn"></div>
+      <div class="vars" id="vars"></div>
+      <details class="full"><summary>Pełna tabela świadczeń — wszystkie pozycje dla tej branży</summary><div class="tblwrap" id="tbl"></div></details>
+      <div class="note">Kwoty w osobnych wierszach <b>nie kumulują się</b> — wartość w wierszu to już skumulowana kwota świadczeń (np. w zgonie w wyniku wypadku zawarta jest kwota za zgon). Szczegóły, wyłączenia i ograniczenia: OWU <b>EZwB 01/25</b>.</div>
+      <div class="nav"><button class="btn ghost" onclick="go(1)">← Wstecz</button><button class="btn" onclick="go(3)">Dalej: rozszerzenia →</button></div>
+    </section>
+
+    <!-- 3 -->
+    <section class="step" data-s="3">
+      <div class="eyebrow">Krok 3</div>
+      <h2 class="t">Co udostępniasz pracownikom</h2>
+      <p class="sub">Składkę za wszystko płacisz Ty — ale to pracownik decyduje w swojej deklaracji, które rozszerzenia weźmie. Zaznacz więc, <b>co ma zobaczyć w menu</b>.</p>
+
+      <div class="warnbox" style="margin-top:18px"><b>Twój koszt to widełki, nie liczba.</b> Dopiero po zebraniu deklaracji od zespołu wiadomo, ile osób wzięło co. Poniżej możesz założyć, jaka część zespołu skorzysta — żeby zaplanować budżet.</div>
+
+      <div id="adoptBox" style="margin-top:22px;border:1px solid var(--line);padding:18px 20px;max-width:640px;display:none">
+        <label style="font-size:12.5px;font-weight:500;display:block">Zakładam, że rozszerzenia wybierze <b id="adoptV" style="color:var(--red)">50%</b> zespołu</label>
+        <input id="adopt" type="range" min="0" max="100" step="5" value="50" style="width:100%;margin-top:12px;accent-color:var(--red)">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#9A9A9A;margin-top:2px"><span>nikt (koszt minimalny)</span><span>wszyscy (koszt maksymalny)</span></div>
+      </div>
+
+      <h3 class="sec">MediOpieka <small>· assistance i świadczenia medyczne, realizowane w Polsce</small></h3>
+      <div class="addgrid" id="medi"></div>
+
+      <h3 class="sec">Global Doctors <small>· leczenie za granicą, suma 2 mln €</small></h3>
+      <div class="addgrid" id="gd"></div>
+
+      <h3 class="sec">Pakiety dodatkowe <small>· każdy w 3 wariantach</small></h3>
+      <p style="font-size:13px;color:var(--gray);margin-top:8px">Pakiet główny rozlicza operacje w <b>5 podgrupach</b>, więc domyślnie pokazujemy zgodne z nim pakiety 5-podgrupowe. <button id="tog35" style="background:0;border:0;color:var(--red);text-decoration:underline;cursor:pointer;font-size:13px;font-family:inherit">pokaż też warianty 3-podgrupowe</button></p>
+      <div id="pd35"></div>
+      <div class="addgrid" id="pak"></div>
+
+      <div class="nav"><button class="btn ghost" onclick="go(2)">← Wstecz</button><button class="btn" onclick="go(4)">Dalej: dane firmy →</button></div>
+    </section>
+
+    <!-- 4 -->
+    <section class="step" data-s="4">
+      <div class="eyebrow">Krok 4</div>
+      <h2 class="t">Ile osób ubezpieczasz? <span style="font-size:15px;font-weight:400;color:var(--red);white-space:nowrap">— musi być od 2 do 100</span></h2>
+      <p class="sub"><b>Składka jest już ostateczna</b> i nie zależy od wieku zespołu — struktura wiekowa jest nam potrzebna do wystawienia polisy, nie do wyceny. Możesz podać ją teraz albo dostać arkusz mailem.</p>
+
+      <div class="fin" id="tryb" style="margin-top:20px">
+        <button data-t="0" class="on">Mam listę — wkleję teraz</button>
+        <button data-t="1">Podam samą liczbę, resztę uzupełnię później</button>
+      </div>
+
+      <div class="note" style="border-left-color:var(--ok)" id="noteStr"><b>PESEL-e nie opuszczają tej przeglądarki.</b> Przeliczamy je lokalnie na wiek i płeć, a do nas trafia wyłącznie tabela zbiorcza — ile kobiet i mężczyzn w każdym roczniku. Odśwież stronę i znikają.</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px" id="strGrid">
+        <div>
+          <label style="font-size:12.5px;font-weight:500;display:block;margin-bottom:6px">Wklej dane (jedna osoba w wierszu) — PESEL, data urodzenia + płeć albo sam rocznik + płeć</label>
+          <textarea id="paste" rows="12" placeholder="85031255516&#10;99113012345&#10;2001-05-15 K&#10;1978 M&#10;…" style="width:100%;border:1px solid var(--line);padding:12px;font-family:ui-monospace,monospace;font-size:13px;resize:vertical"></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" id="parse">Przelicz strukturę</button>
+            <button class="btn ghost" id="demo">Wklej dane demo</button>
+          </div>
+        </div>
+        <div id="strOut"><div style="border:1px dashed var(--line);height:100%;min-height:280px;display:grid;place-items:center;color:#9A9A9A;font-size:13px;text-align:center;padding:20px">Tu pojawi się rozkład wieku<br>i liczba osób do ubezpieczenia</div></div>
+      </div>
+
+      <div class="form" id="strManual" style="display:none">
+        <div class="f wide" style="max-width:420px">
+          <label>Liczba osób do ubezpieczenia <i>*</i></label>
+          <input id="cntM" type="number" min="2" max="100" value="12">
+          <small style="font-size:12px;color:var(--gray);margin-top:4px">Arkusz struktury wiekowej wyślemy mailem razem z potwierdzeniem. Polisę wystawimy, gdy go odeślesz — składka się nie zmieni.</small>
+        </div>
+      </div>
+
+      <div class="nav"><button class="btn ghost" onclick="go(3)">← Wstecz</button><button class="btn" id="b4s" disabled onclick="go(5)">Dalej: dane firmy →</button></div>
+    </section>
+
+    <!-- 5 -->
+    <section class="step" data-s="5">
+      <div class="eyebrow">Krok 5</div>
+      <h2 class="t">Dane firmy</h2>
+      <p class="sub">Podaj NIP — resztę pobierzemy z rejestru REGON (GUS). Sprawdzimy też, czy Twoje PKD mieści się w wybranej branży.</p>
+
+      <div class="form">
+        <div class="f wide" id="fNip">
+          <label>NIP <i>*</i></label>
+          <div class="nipRow">
+            <input id="nip" maxlength="13" placeholder="np. 5252248481" autocomplete="off">
+            <button class="btn" id="btnGus">Sprawdź w GUS</button>
+          </div>
+          <small class="err">Nieprawidłowy NIP — suma kontrolna się nie zgadza.</small>
+        </div>
+      </div>
+
+      <div class="simrow">
+        <span>⚙ Prototyp — symuluj odpowiedź GUS:</span>
+        <select id="sim">
+          <option value="ok">firma znaleziona</option>
+          <option value="big">firma znaleziona, ale &gt;100 pracowników</option>
+          <option value="none">brak firmy w rejestrze</option>
+          <option value="down">API GUS nie odpowiada</option>
+        </select>
+      </div>
+
+      <div id="gusOut"></div>
+
+      <div class="form" id="rest" style="display:none">
+        <div class="f"><label>Osoba do kontaktu <i>*</i></label><input id="imie" placeholder="Imię i nazwisko"></div>
+        <div class="f"><label>Stanowisko</label><input id="stan" placeholder="np. właściciel, HR"></div>
+        <div class="f"><label>E-mail <i>*</i></label><input id="mail" type="email" placeholder="na ten adres wyślemy plik XLS"></div>
+        <div class="f"><label>Telefon <i>*</i></label><input id="tel" placeholder="+48"></div>
+        <div class="f"><label>Planowany start ochrony</label><input id="start" type="date"></div>
+      </div>
+
+      <div class="nav"><button class="btn ghost" onclick="go(4)">← Wstecz</button><button class="btn" id="b4" disabled onclick="go(6)">Dalej: podsumowanie →</button></div>
+    </section>
+
+    <!-- 6 -->
+    <section class="step" data-s="6">
+      <div class="eyebrow">Krok 6</div>
+      <h2 class="t">Podsumowanie i zgody</h2>
+      <div class="sumcard" id="sum"></div>
+      <div class="cons" id="cons"></div>
+      <div class="nav"><button class="btn ghost" onclick="go(5)">← Wstecz</button><button class="btn" id="send" disabled>Złóż wniosek</button></div>
+    </section>
+
+    <!-- 7 -->
+    <section class="step" data-s="7">
+      <div class="done">
+        <div class="ic">✓</div>
+        <h2>Wniosek przyjęty</h2>
+        <p>Numer <b id="wnr"></b>. Kopia oferty poszła na <b id="wmail"></b>. Opiekun odezwie się w ciągu jednego dnia roboczego.</p>
+        <div class="xls" id="xlsBox">
+          <div class="ix">XLS</div>
+          <div>
+            <strong>lista-ubezpieczonych.xlsx</strong>
+            <small>Arkusz zgłoszeniowy ERGO Hestii — w załączniku maila. Wypełnij dane osób przystępujących i odeślij na <b>wnioski@…</b>. Każdy pracownik składa własną deklarację z wyborem rozszerzeń — dopiero wtedy znamy ostateczną składkę.</small>
+          </div>
+        </div>
+        <div id="komplet" style="display:none;max-width:560px;margin:32px auto 0;border:1px solid var(--line);border-left:3px solid var(--ok);padding:18px;text-align:left"><strong style="display:block;font-size:14px">Wniosek jest kompletny.</strong><small style="color:var(--gray);font-size:12.5px">Strukturę wiekową już mamy — nie musisz nic odsyłać. Opiekun potwierdzi warunki i przygotuje polisę.</small></div>
+        <div style="margin-top:32px"><button class="btn ghost" onclick="location.reload()">Zacznij od nowa</button></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="bd2" id="bd2"><div class="wrap" id="bd2i"></div></div>
+  <div class="bar" id="bar">
+    <div class="wrap">
+      <div class="l">
+        <div class="m"><span>Pakiet główny / os. · gwarantowana</span><b id="pp">—</b></div>
+        <div class="m hi"><span>Szacowany koszt firmy / mies.</span><b id="pc">—</b></div>
+        <div class="m"><span>Widełki (0–100% adopcji)</span><b id="py">—</b></div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <button class="br" id="brb">rozbij składkę ▾</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DB = {"meta": {"produkt": "ERGO Życie w Biznesie", "ubezpieczyciel": "Sopockie Towarzystwo Ubezpieczeń na Życie ERGO Hestia S.A.", "owu": {"glowne": "EZwB 01/25", "mediopieka": "MA 01/25", "global_doctors": "GD-GZ 01/25"}, "skladki_obowiazuja": {"branze_od": "2026-07-01", "branze_do": "2026-12-31", "pakiety_dodatkowe_do": "2026-12-31"}, "warunki_wejscia": {"zatrudnienie_min": 2, "zatrudnienie_max": 100, "wiek_pracownika_min": 15, "wiek_pracownika_max": 70, "bliscy": ["małżonek", "partner", "pełnoletnie dziecko"], "segment": "nowi klienci"}, "podgrupy_operacji_pakiet_glowny": 5, "uwagi": ["Kwoty w osobnych wierszach NIE kumulują się — wartość w wierszu jest skumulowaną kwotą świadczeń (np. zgon w wyniku NW zawiera już kwotę za zgon).", "Pakiet główny: operacja chirurgiczna w podziale na 5 podgrup (G1 100% / G2 75% / G3 50% / G4 25% / G5 10%) — dlatego z pakietów dodatkowych spójne są warianty 5-podgrupowe.", "Świadczenia MediOpieka realizujemy w Polsce; ochroną objęte są zdarzenia na całym świecie.", "Świadczenie z tytułu zgonu ubezpieczonego = suma ubezpieczenia (istotne dla zwolnienia z odprawy pośmiertnej)."]}, "swiadczenia": {"zgon": {"l": "Zgon ubezpieczonego", "g": "zgon", "u": "pln", "k": "brak"}, "zgon_nw": {"l": "Zgon ubezpieczonego w wyniku nieszczęśliwego wypadku", "g": "zgon", "u": "pln", "k": "brak"}, "zgon_komunikacyjny": {"l": "Zgon ubezpieczonego w wyniku wypadku komunikacyjnego", "g": "zgon", "u": "pln", "k": "brak"}, "zgon_w_pracy": {"l": "Zgon ubezpieczonego w wyniku wypadku w pracy", "g": "zgon", "u": "pln", "k": "brak"}, "zgon_komunikacyjny_w_pracy": {"l": "Zgon ubezpieczonego w wyniku wypadku komunikacyjnego w pracy", "g": "zgon", "u": "pln", "k": "brak"}, "zgon_zawal_udar": {"l": "Zgon ubezpieczonego w wyniku zawału mięśnia sercowego lub udaru mózgu", "g": "zgon", "u": "pln", "k": "brak"}, "zgon_nowotwor": {"l": "Zgon ubezpieczonego w wyniku choroby nowotworowej", "g": "zgon", "u": "pln", "k": "brak"}, "tu_nw": {"l": "Trwały uszczerbek w wyniku nieszczęśliwego wypadku", "g": "wypadek", "u": "pln_1pct", "k": "brak"}, "tu_komunikacyjny": {"l": "Trwały uszczerbek w wyniku wypadku komunikacyjnego", "g": "wypadek", "u": "pln_1pct", "k": "brak"}, "tu_w_pracy": {"l": "Trwały uszczerbek w wyniku wypadku w pracy", "g": "wypadek", "u": "pln_1pct", "k": "brak"}, "tu_komunikacyjny_w_pracy": {"l": "Trwały uszczerbek w wyniku wypadku komunikacyjnego w pracy", "g": "wypadek", "u": "pln_1pct", "k": "brak"}, "uraz_bez_uszczerbku": {"l": "Uraz niepowodujący trwałego uszczerbku (NW)", "g": "wypadek", "u": "pln", "k": "brak"}, "koszty_rehabilitacji_nw": {"l": "Koszty rehabilitacji wskutek trwałego uszczerbku (NW)", "g": "wypadek", "u": "pln", "k": "brak"}, "niezdolnosc_nw": {"l": "Całkowita trwała niezdolność do pracy w wyniku NW", "g": "wypadek", "u": "pln", "k": "brak"}, "niezdolnosc_choroba_nw": {"l": "Całkowita trwała niezdolność do pracy w wyniku choroby lub NW", "g": "wypadek", "u": "pln", "k": "brak"}, "tu_zawal_udar": {"l": "Trwały uszczerbek w wyniku zawału serca lub udaru mózgu", "g": "choroba", "u": "pln_1pct", "k": "brak"}, "pz_max": {"l": "Poważne zachorowanie — zakres maksymalny", "g": "choroba", "u": "pln", "max": true, "k": "brak"}, "pz_nowotworowa": {"l": "Poważne zachorowanie na chorobę nowotworową", "g": "choroba", "u": "pln", "max": true, "k": "brak"}, "pz_in_situ": {"l": "Poważne zachorowanie na nowotwór in situ", "g": "choroba", "u": "pln", "max": true, "k": "brak"}, "pz_uklad_krazenia": {"l": "Poważne zachorowanie na chorobę układu krążenia", "g": "choroba", "u": "pln", "max": true, "k": "brak"}, "pz_zakazna": {"l": "Poważne zachorowanie na chorobę zakaźną", "g": "choroba", "u": "pln", "max": true, "k": "brak"}, "leczenie_spec": {"l": "Leczenie specjalistyczne", "g": "choroba", "u": "pln", "max": true, "k": "brak"}, "leczenie_spec_onko": {"l": "Leczenie specjalistyczne onkologiczne", "g": "choroba", "u": "pln", "max": true, "k": "brak"}, "leczenie_spec_kardio": {"l": "Leczenie specjalistyczne kardiologiczne", "g": "choroba", "u": "pln", "max": true, "k": "brak"}, "szpital_choroba": {"l": "Leczenie szpitalne — choroba", "g": "szpital", "u": "pln_dzien", "dni": "1–180", "k": "brak"}, "szpital_nw": {"l": "Leczenie szpitalne — nieszczęśliwy wypadek", "g": "szpital", "u": "pln_dzien", "dni": "1–180", "k": "brak"}, "szpital_komunikacyjny": {"l": "Leczenie szpitalne — wypadek komunikacyjny", "g": "szpital", "u": "pln_dzien", "dni": "1–180", "k": "brak"}, "szpital_w_pracy": {"l": "Leczenie szpitalne — wypadek w pracy", "g": "szpital", "u": "pln_dzien", "dni": "1–180", "k": "brak"}, "szpital_komunikacyjny_w_pracy": {"l": "Leczenie szpitalne — wypadek komunikacyjny w pracy", "g": "szpital", "u": "pln_dzien", "dni": "1–180", "k": "brak"}, "szpital_zawal_udar": {"l": "Leczenie szpitalne — zawał serca lub udar mózgu", "g": "szpital", "u": "pln_dzien", "dni": "1–180", "k": "brak"}, "szpital_oiom": {"l": "Leczenie szpitalne na OIOM/OIT", "g": "szpital", "u": "pln_dzien", "dni": "1–14", "k": "brak"}, "niezdolnosc_po_szpitalu": {"l": "Czasowa niezdolność do pracy po leczeniu szpitalnym", "g": "szpital", "u": "pln", "k": "brak"}, "szpital_rehabilitacyjny": {"l": "Leczenie szpitalne na oddziale rehabilitacyjnym", "g": "szpital", "u": "pln_dzien", "k": "brak"}, "koszty_poszpitalne": {"l": "Koszty leczenia poszpitalnego (karta apteczna)", "g": "szpital", "u": "pln", "k": "brak"}, "sanatorium": {"l": "Pobyt w sanatorium po leczeniu szpitalnym", "g": "szpital", "u": "pln", "k": "brak"}, "operacja": {"l": "Operacja chirurgiczna — 5 podgrup", "g": "operacje", "u": "pln", "k": "brak"}, "powiklania": {"l": "Powikłania pooperacyjne", "g": "operacje", "u": "pln", "k": "brak"}, "zgon_malzonka": {"l": "Zgon małżonka albo partnera", "g": "malzonek", "u": "pln", "k": "6 miesięcy"}, "zgon_malzonka_nw": {"l": "Zgon małżonka albo partnera w wyniku NW", "g": "malzonek", "u": "pln", "k": "brak"}, "zgon_malzonka_komunikacyjny": {"l": "Zgon małżonka albo partnera w wyniku wypadku komunikacyjnego", "g": "malzonek", "u": "pln", "k": "brak"}, "zgon_malzonka_zawal_udar": {"l": "Zgon małżonka albo partnera w wyniku zawału serca lub udaru mózgu", "g": "malzonek", "u": "pln", "k": "6 miesięcy"}, "pz_malzonka_max": {"l": "Poważne zachorowanie małżonka — zakres maksymalny", "g": "malzonek", "u": "pln", "max": true, "k": "3 miesiące"}, "pz_malzonka_rozszerzony": {"l": "Poważne zachorowanie małżonka — zakres rozszerzony", "g": "malzonek", "u": "pln", "max": true, "k": "3 miesiące"}, "pz_malzonka_podstawowy": {"l": "Poważne zachorowanie małżonka — zakres podstawowy", "g": "malzonek", "u": "pln", "max": true, "k": "3 miesiące"}, "pz_malzonka_in_situ": {"l": "Poważne zachorowanie małżonka na nowotwór in situ", "g": "malzonek", "u": "pln", "max": true, "k": "3 miesiące"}, "leczenie_spec_malzonka": {"l": "Leczenie specjalistyczne małżonka", "g": "malzonek", "u": "pln", "max": true, "k": "3 miesiące"}, "szpital_malzonka_choroba": {"l": "Leczenie szpitalne małżonka — choroba", "g": "malzonek", "u": "pln_dzien", "dni": "1–90", "k": "1 miesiąc"}, "szpital_malzonka_nw": {"l": "Leczenie szpitalne małżonka — NW", "g": "malzonek", "u": "pln_dzien", "dni": "1–90", "k": "brak"}, "operacja_malzonka": {"l": "Operacja chirurgiczna małżonka — 5 podgrup", "g": "malzonek", "u": "pln", "k": "6 miesięcy"}, "powiklania_malzonka": {"l": "Powikłania pooperacyjne małżonka", "g": "malzonek", "u": "pln", "k": "6 miesięcy"}, "zgon_dziecka": {"l": "Zgon dziecka", "g": "dziecko", "u": "pln", "k": "6 miesięcy"}, "zgon_dziecka_nw": {"l": "Zgon dziecka w wyniku NW", "g": "dziecko", "u": "pln", "k": "brak"}, "zgon_dziecka_komunikacyjny": {"l": "Zgon dziecka w wyniku wypadku komunikacyjnego", "g": "dziecko", "u": "pln", "k": "brak"}, "osierocenie": {"l": "Osierocenie dziecka w wyniku zgonu ubezpieczonego", "g": "dziecko", "u": "pln", "k": "6 miesięcy"}, "osierocenie_oboje_nw": {"l": "Osierocenie dziecka wskutek zgonu obojga rodziców w wyniku NW", "g": "dziecko", "u": "pln", "k": "brak"}, "urodzenie_dziecka": {"l": "Urodzenie się dziecka", "g": "dziecko", "u": "pln", "k": "9 miesięcy"}, "urodzenie_martwego": {"l": "Urodzenie martwego noworodka", "g": "dziecko", "u": "pln", "k": "9 miesięcy"}, "pz_dziecka": {"l": "Poważne zachorowanie dziecka", "g": "dziecko", "u": "pln", "max": true, "k": "3 miesiące"}, "pz_dziecka_nowotworowa": {"l": "Poważne zachorowanie dziecka na chorobę nowotworową", "g": "dziecko", "u": "pln", "max": true, "k": "3 miesiące"}, "pz_dziecka_zakazna": {"l": "Poważne zachorowanie dziecka na chorobę zakaźną", "g": "dziecko", "u": "pln", "max": true, "k": "3 miesiące"}, "leczenie_spec_dziecka": {"l": "Leczenie specjalistyczne dziecka", "g": "dziecko", "u": "pln", "max": true, "k": "3 miesiące"}, "leczenie_spec_onko_dziecka": {"l": "Leczenie specjalistyczne onkologiczne dziecka", "g": "dziecko", "u": "pln", "max": true, "k": "3 miesiące"}, "wada_wrodzona": {"l": "Wada wrodzona dziecka", "g": "dziecko", "u": "pln", "k": "9 miesięcy"}, "szpital_dziecka_choroba": {"l": "Leczenie szpitalne dziecka — choroba (leczenie dłuższe niż 4 dni)", "g": "dziecko", "u": "pln_dzien", "dni": "1–90", "k": "1 miesiąc"}, "szpital_dziecka_nw": {"l": "Leczenie szpitalne dziecka — NW (leczenie dłuższe niż 4 dni)", "g": "dziecko", "u": "pln_dzien", "dni": "1–90", "k": "brak"}, "szpital_dziecka_komunikacyjny": {"l": "Leczenie szpitalne dziecka — wypadek komunikacyjny", "g": "dziecko", "u": "pln_dzien", "dni": "1–90", "k": "brak"}, "szpital_dziecka_oiom": {"l": "Leczenie szpitalne dziecka na OIOM/OIT", "g": "dziecko", "u": "pln_dzien", "dni": "1–90", "k": "1 miesiąc"}, "szpital_dziecka_psychiatryczny": {"l": "Leczenie szpitalne dziecka na oddziale psychiatrycznym", "g": "dziecko", "u": "pln_dzien", "k": "1 miesiąc"}, "operacja_dziecka": {"l": "Operacja chirurgiczna dziecka — 5 podgrup", "g": "dziecko", "u": "pln", "k": "6 miesięcy"}, "operacja_dziecka_nw": {"l": "Operacja chirurgiczna dziecka w wyniku NW — 5 podgrup", "g": "dziecko", "u": "pln", "k": "brak"}, "powiklania_dziecka": {"l": "Powikłania pooperacyjne dziecka", "g": "dziecko", "u": "pln", "k": "6 miesięcy"}, "zgon_rodzica": {"l": "Zgon rodzica ubezpieczonego", "g": "rodzic", "u": "pln", "k": "6 miesięcy"}, "zgon_rodzica_nw": {"l": "Zgon rodzica ubezpieczonego w wyniku NW", "g": "rodzic", "u": "pln", "k": "brak"}, "zgon_rodzica_komunikacyjny": {"l": "Zgon rodzica ubezpieczonego w wyniku wypadku komunikacyjnego", "g": "rodzic", "u": "pln", "k": "brak"}, "zgon_rodzica_malzonka": {"l": "Zgon rodzica małżonka albo partnera", "g": "rodzic", "u": "pln", "k": "6 miesięcy"}, "zgon_rodzica_malzonka_nw": {"l": "Zgon rodzica małżonka albo partnera w wyniku NW", "g": "rodzic", "u": "pln", "k": "brak"}, "zgon_rodzica_malzonka_komunikacyjny": {"l": "Zgon rodzica małżonka albo partnera w wyniku wypadku komunikacyjnego", "g": "rodzic", "u": "pln", "k": "brak"}}, "grupy": {"zgon": "Pakiet świadczeń dotyczący zgonu ubezpieczonego", "wypadek": "Pakiet świadczeń dotyczący wypadku ubezpieczonego", "choroba": "Pakiet świadczeń dotyczący choroby ubezpieczonego", "szpital": "Pakiet świadczeń dotyczący leczenia szpitalnego ubezpieczonego", "operacje": "Pakiet świadczeń dotyczący operacji ubezpieczonego", "malzonek": "Pakiet świadczeń dotyczący małżonka albo partnera", "dziecko": "Pakiet świadczeń dotyczący dziecka", "rodzic": "Pakiet świadczeń dotyczący rodzica"}, "branze": [{"slug": "beauty", "nazwa": "Beauty", "opis": "Salony fryzjerskie, kosmetyczne, SPA, studia paznokci", "kod_ulotki": "EH-UL-EZB-F-2607", "skladka": [58, 68, 76], "skladka_zgon": [15.59, 14.06, 12.08], "s": {"zgon": [100000, 80000, 75000], "zgon_nw": [210000, 170000, 160000], "zgon_komunikacyjny": [320000, 260000, 245000], "zgon_w_pracy": [320000, 260000, 245000], "zgon_komunikacyjny_w_pracy": [480000, 380000, 360000], "zgon_zawal_udar": [150000, 120000, 110000], "zgon_nowotwor": [110000, 90000, 85000], "tu_nw": [650, 600, 550], "tu_komunikacyjny": [1000, 800, 700], "tu_w_pracy": [750, 700, 625], "tu_komunikacyjny_w_pracy": [1200, 1000, 850], "uraz_bez_uszczerbku": [200, 150, 100], "koszty_rehabilitacji_nw": [5000, 5000, 3000], "tu_zawal_udar": [500, 400, 300], "niezdolnosc_choroba_nw": [25000, 25000, 25000], "pz_max": [11000, 8000, 7500], "pz_nowotworowa": [3000, 2000, 2000], "pz_in_situ": [3000, 2000, 2000], "pz_zakazna": [3000, 2000, 2000], "leczenie_spec": [4000, 3000, 3000], "leczenie_spec_kardio": [3000, 2000, 2000], "szpital_choroba": [90, 80, 80], "szpital_nw": [200, 200, 200], "szpital_komunikacyjny": [350, 350, 350], "szpital_w_pracy": [350, 350, 350], "szpital_zawal_udar": [140, 140, 120], "szpital_oiom": [50, 50, 50], "niezdolnosc_po_szpitalu": [250, 250, 250], "szpital_rehabilitacyjny": [50, 40, 40], "koszty_poszpitalne": [200, 150, 150], "operacja": [4500, 3500, 3500], "powiklania": [1500, 1000, 1000], "zgon_malzonka": [null, 15000, 15000], "zgon_malzonka_nw": [null, 30000, 30000], "zgon_malzonka_komunikacyjny": [null, 40000, 40000], "pz_malzonka_max": [null, 4500, 4500], "pz_malzonka_in_situ": [null, 1000, 1000], "leczenie_spec_malzonka": [null, 1500, 1500], "operacja_malzonka": [null, null, 2000], "powiklania_malzonka": [null, null, 1000], "zgon_rodzica": [null, 1800, 1800], "zgon_rodzica_nw": [null, 3800, 3800], "zgon_rodzica_komunikacyjny": [null, 5000, 5000], "zgon_rodzica_malzonka": [null, 1800, 1800], "zgon_rodzica_malzonka_nw": [null, 3800, 3800], "zgon_rodzica_malzonka_komunikacyjny": [null, 5000, 5000], "zgon_dziecka": [null, null, 5000], "zgon_dziecka_nw": [null, null, 10000], "zgon_dziecka_komunikacyjny": [null, null, 15000], "osierocenie": [null, null, 4000], "osierocenie_oboje_nw": [null, null, 10000], "urodzenie_dziecka": [null, null, 1500], "urodzenie_martwego": [null, null, 3000], "pz_dziecka": [null, null, 5000], "pz_dziecka_nowotworowa": [null, null, 2000], "leczenie_spec_dziecka": [null, null, 2000], "leczenie_spec_onko_dziecka": [null, null, 1500]}}, {"slug": "budownictwo", "nazwa": "Budownictwo", "opis": "Firmy budowlane, wykończeniowe, instalacyjne", "kod_ulotki": "EH-UL-EZB-C-2607", "skladka": [63, 68, 79], "skladka_zgon": [19.7, 15.71, 15.71], "s": {"zgon": [80000, 70000, 70000], "zgon_nw": [160000, 140000, 140000], "zgon_komunikacyjny": [240000, 210000, 210000], "zgon_w_pracy": [240000, 210000, 210000], "zgon_komunikacyjny_w_pracy": [370000, 320000, 320000], "zgon_zawal_udar": [90000, 80000, 80000], "zgon_nowotwor": [90000, 80000, 80000], "tu_nw": [550, 500, 500], "tu_komunikacyjny": [700, 650, 650], "tu_w_pracy": [600, 550, 550], "koszty_rehabilitacji_nw": [5000, 5000, 5000], "niezdolnosc_nw": [20000, 15000, 15000], "pz_max": [9000, 8000, 7500], "pz_in_situ": [2000, 2000, 2000], "pz_uklad_krazenia": [2000, 2000, 2000], "pz_zakazna": [2000, 2000, 2000], "leczenie_spec": [3000, 2500, 2000], "leczenie_spec_kardio": [3000, 2500, 2000], "szpital_choroba": [70, 70, 65], "szpital_nw": [250, 250, 250], "szpital_komunikacyjny": [400, 400, 350], "szpital_w_pracy": [400, 400, 350], "szpital_rehabilitacyjny": [30, 30, 30], "operacja": [4000, 4000, 4000], "powiklania": [2000, 2000, 2000], "zgon_malzonka": [null, 8000, 9000], "zgon_malzonka_nw": [null, 18000, 24000], "zgon_malzonka_komunikacyjny": [null, 33000, 39000], "zgon_dziecka": [null, 7000, 7000], "zgon_dziecka_nw": [null, 14000, 14000], "zgon_dziecka_komunikacyjny": [null, 21000, 21000], "osierocenie": [null, 6000, 5000], "osierocenie_oboje_nw": [null, 16000, 15000], "urodzenie_dziecka": [null, 1200, 1200], "urodzenie_martwego": [null, 3000, 3000], "pz_dziecka": [null, 8000, 6000], "leczenie_spec_dziecka": [null, 2000, 2000], "operacja_dziecka_nw": [null, 1500, 1200], "zgon_rodzica": [null, null, 1700], "zgon_rodzica_nw": [null, null, 3700], "zgon_rodzica_komunikacyjny": [null, null, 6000], "zgon_rodzica_malzonka": [null, null, 1700], "zgon_rodzica_malzonka_nw": [null, null, 3700], "zgon_rodzica_malzonka_komunikacyjny": [null, null, 6000]}}, {"slug": "gastronomia-hotelarstwo", "nazwa": "Gastronomia i hotelarstwo", "opis": "Restauracje, kawiarnie, catering, hotele i pensjonaty", "kod_ulotki": "EH-UL-EZB-E-2607", "skladka": [63, 68, 79], "skladka_zgon": [20.16, 18.74, 18.74], "uwaga": "Tabela świadczeń identyczna jak w branży budownictwo; różni się wyłącznie część składki przeznaczona na zgon.", "s": {"zgon": [80000, 70000, 70000], "zgon_nw": [160000, 140000, 140000], "zgon_komunikacyjny": [240000, 210000, 210000], "zgon_w_pracy": [240000, 210000, 210000], "zgon_komunikacyjny_w_pracy": [370000, 320000, 320000], "zgon_zawal_udar": [90000, 80000, 80000], "zgon_nowotwor": [90000, 80000, 80000], "tu_nw": [550, 500, 500], "tu_komunikacyjny": [700, 650, 650], "tu_w_pracy": [600, 550, 550], "koszty_rehabilitacji_nw": [5000, 5000, 5000], "niezdolnosc_nw": [20000, 15000, 15000], "pz_max": [9000, 8000, 7500], "pz_in_situ": [2000, 2000, 2000], "pz_uklad_krazenia": [2000, 2000, 2000], "pz_zakazna": [2000, 2000, 2000], "leczenie_spec": [3000, 2500, 2000], "leczenie_spec_kardio": [3000, 2500, 2000], "szpital_choroba": [70, 70, 65], "szpital_nw": [250, 250, 250], "szpital_komunikacyjny": [400, 400, 350], "szpital_w_pracy": [400, 400, 350], "szpital_rehabilitacyjny": [30, 30, 30], "operacja": [4000, 4000, 4000], "powiklania": [2000, 2000, 2000], "zgon_malzonka": [null, 8000, 9000], "zgon_malzonka_nw": [null, 18000, 24000], "zgon_malzonka_komunikacyjny": [null, 33000, 39000], "zgon_dziecka": [null, 7000, 7000], "zgon_dziecka_nw": [null, 14000, 14000], "zgon_dziecka_komunikacyjny": [null, 21000, 21000], "osierocenie": [null, 6000, 5000], "osierocenie_oboje_nw": [null, 16000, 15000], "urodzenie_dziecka": [null, 1200, 1200], "urodzenie_martwego": [null, 3000, 3000], "pz_dziecka": [null, 8000, 6000], "leczenie_spec_dziecka": [null, 2000, 2000], "operacja_dziecka_nw": [null, 1500, 1200], "zgon_rodzica": [null, null, 1700], "zgon_rodzica_nw": [null, null, 3700], "zgon_rodzica_komunikacyjny": [null, null, 6000], "zgon_rodzica_malzonka": [null, null, 1700], "zgon_rodzica_malzonka_nw": [null, null, 3700], "zgon_rodzica_malzonka_komunikacyjny": [null, null, 6000]}}, {"slug": "ksiegowosc", "nazwa": "Księgowość", "opis": "Biura rachunkowe, doradztwo podatkowe, audyt", "kod_ulotki": "EH-UL-EZB-I-2607", "skladka": [63, 70, 78], "skladka_zgon": [13.79, 13.79, 13.74], "s": {"zgon": [90000, 90000, 80000], "zgon_nw": [180000, 180000, 160000], "zgon_komunikacyjny": [270000, 270000, 240000], "zgon_w_pracy": [270000, 270000, 240000], "zgon_komunikacyjny_w_pracy": [400000, 400000, 350000], "zgon_zawal_udar": [120000, 120000, 110000], "zgon_nowotwor": [100000, 100000, 90000], "tu_nw": [650, 600, 550], "tu_komunikacyjny": [950, 900, 850], "tu_w_pracy": [800, 750, 700], "tu_komunikacyjny_w_pracy": [1200, 1150, 1100], "niezdolnosc_nw": [35000, 30000, 25000], "tu_zawal_udar": [500, 450, 400], "pz_max": [15000, 15000, 12000], "pz_in_situ": [3000, 3000, 3000], "pz_uklad_krazenia": [3000, 3000, 3000], "pz_zakazna": [3000, 3000, 3000], "leczenie_spec": [3000, 3000, 2500], "leczenie_spec_kardio": [3000, 3000, 2500], "szpital_choroba": [85, 80, 80], "szpital_nw": [200, 200, 200], "szpital_komunikacyjny": [400, 350, 350], "szpital_w_pracy": [400, 350, 350], "szpital_komunikacyjny_w_pracy": [700, 600, 600], "szpital_zawal_udar": [135, 110, 110], "szpital_oiom": [70, 60, 50], "niezdolnosc_po_szpitalu": [250, 250, 250], "szpital_rehabilitacyjny": [50, 40, 40], "koszty_poszpitalne": [150, 150, 150], "operacja": [4500, 4000, 3500], "powiklania": [2000, 2000, 2000], "zgon_malzonka": [15000, 15000, 12000], "zgon_malzonka_nw": [30000, 30000, 25000], "zgon_malzonka_komunikacyjny": [45000, 45000, 40000], "pz_malzonka_rozszerzony": [3000, 3000, 3000], "szpital_malzonka_choroba": [50, 50, 50], "szpital_malzonka_nw": [100, 100, 100], "zgon_dziecka": [null, 6000, 7000], "zgon_dziecka_nw": [null, 12000, 14000], "zgon_dziecka_komunikacyjny": [null, 18000, 21000], "urodzenie_dziecka": [null, 1500, 1300], "urodzenie_martwego": [null, 3000, 3000], "pz_dziecka": [null, 8000, 9000], "leczenie_spec_dziecka": [null, 2000, 2000], "wada_wrodzona": [null, 3500, 3000], "szpital_dziecka_choroba": [null, 40, 40], "szpital_dziecka_nw": [null, 100, 100], "operacja_dziecka": [null, 2000, 1500], "zgon_rodzica": [null, null, 1700], "zgon_rodzica_nw": [null, null, 4000], "zgon_rodzica_komunikacyjny": [null, null, 5000], "zgon_rodzica_malzonka": [null, null, 1700], "zgon_rodzica_malzonka_nw": [null, null, 4000], "zgon_rodzica_malzonka_komunikacyjny": [null, null, 5000]}}, {"slug": "nieruchomosci", "nazwa": "Nieruchomości", "opis": "Biura nieruchomości, zarządzanie najmem, deweloperzy", "kod_ulotki": "EH-UL-EZB-J-2607", "skladka": [70, 76, 86], "skladka_zgon": [21.98, 16.15, 17.36], "s": {"zgon": [80000, 70000, 60000], "zgon_nw": [170000, 150000, 130000], "zgon_komunikacyjny": [260000, 230000, 200000], "zgon_w_pracy": [260000, 230000, 200000], "zgon_komunikacyjny_w_pracy": [390000, 350000, 310000], "zgon_zawal_udar": [120000, 110000, 100000], "zgon_nowotwor": [90000, 80000, 70000], "osierocenie": [null, 5000, 5000], "osierocenie_oboje_nw": [null, 10000, 10000], "tu_nw": [600, 550, 500], "tu_komunikacyjny": [750, 700, 650], "tu_w_pracy": [700, 650, 600], "tu_zawal_udar": [400, 400, 400], "pz_max": [10000, 9000, 8000], "pz_in_situ": [2000, 2000, 2000], "pz_uklad_krazenia": [2000, 2000, 2000], "pz_zakazna": [3000, 3000, 3000], "leczenie_spec": [4000, 4000, 4000], "leczenie_spec_kardio": [2000, 2000, 2000], "szpital_choroba": [80, 70, 70], "szpital_nw": [300, 250, 250], "szpital_komunikacyjny": [450, 400, 400], "szpital_w_pracy": [450, 400, 400], "szpital_zawal_udar": [130, 120, 120], "szpital_oiom": [60, 60, 60], "niezdolnosc_po_szpitalu": [200, 200, 200], "koszty_poszpitalne": [200, 200, 150], "operacja": [5000, 4000, 3000], "powiklania": [2000, 2000, 1500], "zgon_malzonka": [null, 15000, 15000], "zgon_malzonka_nw": [null, 30000, 30000], "zgon_malzonka_komunikacyjny": [null, 40000, 40000], "zgon_dziecka": [null, 6000, 6000], "zgon_dziecka_nw": [null, 12000, 12000], "zgon_dziecka_komunikacyjny": [null, 18000, 18000], "urodzenie_dziecka": [null, 1200, 1200], "urodzenie_martwego": [null, 3000, 3000], "zgon_rodzica": [null, null, 1700], "zgon_rodzica_nw": [null, null, 3700], "zgon_rodzica_komunikacyjny": [null, null, 5100], "zgon_rodzica_malzonka": [null, null, 1700], "zgon_rodzica_malzonka_nw": [null, null, 3700], "zgon_rodzica_malzonka_komunikacyjny": [null, null, 5100]}}, {"slug": "piekarnictwo", "nazwa": "Piekarnictwo", "opis": "Piekarnie, cukiernie, produkcja pieczywa", "kod_ulotki": "EH-UL-EZB-H-2607", "skladka": [65, 72, 80], "skladka_zgon": [16.76, 14.63, 13.23], "s": {"zgon": [80000, 70000, 60000], "zgon_nw": [160000, 140000, 120000], "zgon_komunikacyjny": [240000, 210000, 180000], "zgon_w_pracy": [240000, 210000, 180000], "zgon_komunikacyjny_w_pracy": [370000, 320000, 270000], "zgon_zawal_udar": [100000, 90000, 70000], "zgon_nowotwor": [90000, 80000, 70000], "tu_nw": [700, 650, 600], "tu_komunikacyjny": [900, 800, 700], "tu_w_pracy": [800, 750, 700], "uraz_bez_uszczerbku": [200, 200, 200], "koszty_rehabilitacji_nw": [5000, 5000, 5000], "niezdolnosc_nw": [30000, 25000, 25000], "tu_zawal_udar": [500, 450, 400], "pz_max": [10000, 9000, 8000], "pz_in_situ": [3000, 2500, 2000], "pz_zakazna": [3000, 2500, 2000], "leczenie_spec": [3000, 3000, 2500], "szpital_choroba": [80, 80, 80], "szpital_nw": [200, 200, 220], "szpital_komunikacyjny": [400, 400, 370], "szpital_w_pracy": [400, 400, 370], "szpital_komunikacyjny_w_pracy": [700, 700, 620], "szpital_zawal_udar": [150, 150, 140], "szpital_oiom": [80, 80, 70], "niezdolnosc_po_szpitalu": [250, 250, 250], "koszty_poszpitalne": [200, 150, 100], "sanatorium": [500, 500, 500], "operacja": [4500, 4000, 3500], "powiklania": [2000, 2000, 1500], "zgon_malzonka": [null, 15000, 12000], "zgon_malzonka_nw": [null, 30000, 27000], "zgon_malzonka_komunikacyjny": [null, 50000, 47000], "pz_malzonka_podstawowy": [null, 3000, 2000], "zgon_dziecka": [null, 7000, 7000], "zgon_dziecka_nw": [null, 14000, 14000], "zgon_dziecka_komunikacyjny": [null, 21000, 21000], "urodzenie_dziecka": [null, 1200, 1400], "urodzenie_martwego": [null, 4000, 4000], "szpital_dziecka_choroba": [null, 40, 40], "szpital_dziecka_nw": [null, 100, 100], "operacja_dziecka": [null, 1500, 1500], "powiklania_dziecka": [null, 1000, 1000], "zgon_rodzica": [null, null, 1700], "zgon_rodzica_nw": [null, null, 3700], "zgon_rodzica_komunikacyjny": [null, null, 5000], "zgon_rodzica_malzonka": [null, null, 1700], "zgon_rodzica_malzonka_nw": [null, null, 3700], "zgon_rodzica_malzonka_komunikacyjny": [null, null, 5000]}}, {"slug": "stomatologia", "nazwa": "Stomatologia", "opis": "Gabinety i kliniki stomatologiczne", "kod_ulotki": "EH-UL-EZB-G-2607", "skladka": [74, 82, 92], "skladka_zgon": [10.6, 9.59, 13.45], "uwaga": "Jedyna branża, w której Wariant III ma wyższe sumy na zgon niż Wariant I — kolejność wariantów NIE jest monotoniczna.", "s": {"zgon": [90000, 80000, 100000], "zgon_nw": [190000, 170000, 200000], "zgon_komunikacyjny": [290000, 260000, 300000], "zgon_w_pracy": [290000, 260000, 300000], "zgon_komunikacyjny_w_pracy": [480000, 430000, 490000], "zgon_zawal_udar": [130000, 120000, 140000], "zgon_nowotwor": [100000, 90000, 110000], "tu_nw": [700, 650, 650], "tu_komunikacyjny": [1000, 950, 950], "tu_w_pracy": [800, 750, 750], "uraz_bez_uszczerbku": [200, 200, 200], "tu_zawal_udar": [550, 500, 500], "niezdolnosc_choroba_nw": [30000, 30000, 30000], "pz_max": [13000, 11000, 13000], "pz_nowotworowa": [2000, 2000, 2000], "pz_in_situ": [2000, 2000, 3000], "pz_uklad_krazenia": [2000, 2000, 3000], "pz_zakazna": [3000, 3000, 3000], "leczenie_spec": [3000, 3000, 3000], "leczenie_spec_onko": [3000, 2000, 3000], "leczenie_spec_kardio": [3000, 2000, 3000], "szpital_choroba": [80, 75, 80], "szpital_nw": [220, 220, 220], "szpital_komunikacyjny": [420, 420, 420], "szpital_w_pracy": [420, 420, 420], "szpital_komunikacyjny_w_pracy": [720, 720, 720], "szpital_zawal_udar": [150, 145, 150], "szpital_oiom": [70, 70, 70], "niezdolnosc_po_szpitalu": [250, 250, 250], "szpital_rehabilitacyjny": [50, 50, 50], "koszty_poszpitalne": [200, 200, 200], "operacja": [5000, 4500, 5000], "powiklania": [2000, 2000, 2000], "zgon_malzonka": [15000, 14000, 15000], "zgon_malzonka_nw": [30000, 29000, 30000], "zgon_malzonka_komunikacyjny": [50000, 49000, 50000], "zgon_malzonka_zawal_udar": [25000, 24000, 25000], "pz_malzonka_podstawowy": [4000, 3000, 4000], "zgon_dziecka": [7000, 7000, 7000], "zgon_dziecka_nw": [14000, 14000, 14000], "zgon_dziecka_komunikacyjny": [21000, 21000, 21000], "osierocenie": [7000, 6000, 6000], "osierocenie_oboje_nw": [17000, 16000, 16000], "urodzenie_dziecka": [1400, 1300, 1500], "urodzenie_martwego": [3000, 3000, 3000], "pz_dziecka": [10000, 8000, 10000], "pz_dziecka_nowotworowa": [2000, 2000, 2000], "pz_dziecka_zakazna": [2000, 2000, 2000], "leczenie_spec_dziecka": [2000, 1500, 2000], "leczenie_spec_onko_dziecka": [2000, 1500, 2000], "wada_wrodzona": [3000, 3000, 3000], "szpital_dziecka_choroba": [50, 40, 50], "szpital_dziecka_nw": [100, 100, 100], "szpital_dziecka_komunikacyjny": [200, 200, 200], "szpital_dziecka_oiom": [40, 40, 40], "szpital_dziecka_psychiatryczny": [40, 40, 40], "operacja_dziecka": [2000, 1600, 2000], "powiklania_dziecka": [1500, 1000, 1500], "zgon_rodzica": [null, 1800, 2000], "zgon_rodzica_nw": [null, 3800, 4000], "zgon_rodzica_komunikacyjny": [null, 6000, 6500], "zgon_rodzica_malzonka": [null, 1800, 2000], "zgon_rodzica_malzonka_nw": [null, 3800, 4000], "zgon_rodzica_malzonka_komunikacyjny": [null, 6000, 6500]}}, {"slug": "transport-ladowy", "nazwa": "Transport lądowy", "opis": "Firmy transportowe, spedycja, kurierzy", "kod_ulotki": "EH-UL-EZB-D-2607", "skladka": [63, 65, 75], "skladka_zgon": [20.28, 17.62, 17.62], "s": {"zgon": [80000, 60000, 60000], "zgon_nw": [180000, 160000, 160000], "zgon_komunikacyjny": [280000, 260000, 260000], "zgon_w_pracy": [280000, 260000, 260000], "zgon_komunikacyjny_w_pracy": [420000, 420000, 420000], "zgon_zawal_udar": [120000, 100000, 100000], "zgon_nowotwor": [90000, 70000, 70000], "tu_nw": [650, 450, 450], "tu_komunikacyjny": [1000, 800, 800], "tu_w_pracy": [750, 525, 525], "tu_komunikacyjny_w_pracy": [1200, 950, 950], "koszty_rehabilitacji_nw": [5000, 5000, 5000], "niezdolnosc_nw": [30000, 25000, 25000], "tu_zawal_udar": [400, 300, 300], "pz_max": [12000, 6000, 6000], "pz_nowotworowa": [2000, 1500, 1500], "pz_in_situ": [3000, 2000, 2000], "pz_uklad_krazenia": [3000, 2000, 2000], "leczenie_spec": [4000, 3000, 3000], "leczenie_spec_kardio": [3000, 2000, 2000], "szpital_choroba": [80, 60, 60], "szpital_nw": [200, 200, 200], "szpital_komunikacyjny": [350, 350, 350], "szpital_w_pracy": [350, 350, 350], "szpital_zawal_udar": [130, 130, 130], "szpital_oiom": [50, 50, 50], "niezdolnosc_po_szpitalu": [250, 250, 250], "szpital_rehabilitacyjny": [50, 40, 40], "koszty_poszpitalne": [200, 100, 100], "sanatorium": [500, 300, 300], "operacja": [4000, 3000, 3000], "powiklania": [1500, 1000, 1000], "zgon_malzonka": [null, 9000, 9000], "zgon_malzonka_nw": [null, 19000, 19000], "zgon_malzonka_komunikacyjny": [null, 29000, 29000], "zgon_rodzica": [null, 1700, 1700], "zgon_rodzica_nw": [null, 3700, 3700], "zgon_rodzica_komunikacyjny": [null, 5000, 5000], "zgon_rodzica_malzonka": [null, 1700, 1700], "zgon_rodzica_malzonka_nw": [null, 3700, 3700], "zgon_rodzica_malzonka_komunikacyjny": [null, 5000, 5000], "zgon_dziecka": [null, null, 6000], "zgon_dziecka_nw": [null, null, 12000], "zgon_dziecka_komunikacyjny": [null, null, 18000], "osierocenie": [null, null, 5000], "osierocenie_oboje_nw": [null, null, 15000], "urodzenie_dziecka": [null, null, 1300], "urodzenie_martwego": [null, null, 3000], "pz_dziecka": [null, null, 5000], "leczenie_spec_dziecka": [null, null, 1500], "leczenie_spec_onko_dziecka": [null, null, 1000]}}], "mediopieka": [{"slug": "assistance-medyczny", "nazwa": "Assistance medyczny", "skladka": 3.0, "obejmuje": ["ubezpieczony", "małżonek/partner", "dziecko", "rodzic", "rodzic małżonka"], "limit_roczny": 10000, "opis": "Nagłe zachorowanie, NW lub urodzenie dziecka. Limit 10 000 zł na rok polisowy łącznie na wszystkie usługi.", "swiadczenia": [{"n": "Dostarczenie leków, artykułów żywnościowych i higienicznych", "v": "500 zł"}, {"n": "Transporty medyczne (do placówki / z placówki / między placówkami)", "v": "800 zł"}, {"n": "Rehabilitacja", "v": "1 500 zł"}, {"n": "Wypożyczenie albo zakup sprzętu rehabilitacyjnego", "v": "1 000 zł"}, {"n": "Opieka nad niepełnoletnimi dziećmi i osobami niesamodzielnymi", "v": "700 zł"}, {"n": "Usługi pielęgniarskie w miejscu pobytu", "v": "1 000 zł"}, {"n": "Pomoc domowa w miejscu zamieszkania", "v": "500 zł"}, {"n": "Opieka nad zwierzętami domowymi w czasie pobytu w szpitalu", "v": "300 zł"}, {"n": "Wizyta lekarska", "v": "800 zł"}, {"n": "Wizyty u psychologa", "v": "5 konsultacji"}, {"n": "Telemedycyna", "v": "10 porad lekarskich"}, {"n": "Infolinie (medyczna, zdrowe odżywianie, Tele Maluch, pogrzebowa)", "v": "bez limitu"}, {"n": "Rodzic: osobisty asystent / książki / posiłki / artykuły pierwszej potrzeby", "v": "500 / 250 / 500 / 400 zł"}, {"n": "Urodzenie dziecka: zajęcia z trenerem fitness / wizyty położnicze", "v": "700 zł / 3 wizyty"}, {"n": "Wada wrodzona dziecka: pomoc domowa / położna / transport / rehabilitacja / psycholog", "v": "1 000 zł / 5 wizyt / 1 500 zł / 1 500 zł / 5 konsultacji"}, {"n": "Depresja poporodowa: leki / psycholog", "v": "500 zł / 5 konsultacji"}]}, {"slug": "assistance-chorobowy", "nazwa": "Assistance chorobowy ubezpieczonego", "skladka": 2.5, "obejmuje": ["ubezpieczony"], "wersje_dla_bliskich": ["małżonek/partner", "dziecko"], "opis": "Wsparcie medyczne przy poważnym zachorowaniu. Wchodzi w skład Pakietu Zdrowie."}, {"slug": "assistance-onkologiczny", "nazwa": "Assistance onkologiczny ubezpieczonego", "skladka": 2.0, "obejmuje": ["ubezpieczony"], "wersje_dla_bliskich": ["małżonek/partner", "dziecko"], "opis": "Konsultacje onkologiczno-genetyczne, badania, wsparcie psychoonkologiczne. Wchodzi w skład Pakietu Onkologicznego."}, {"slug": "teleopieka-kardiologiczna", "nazwa": "Teleopieka kardiologiczna ubezpieczonego", "skladka": 0.8, "obejmuje": ["ubezpieczony"], "wersje_dla_bliskich": ["małżonek/partner"], "opis": "Zestaw teleopieki (EKG), dostarczenie, szkolenie i kontakt z lekarzem. Wchodzi w skład Pakietu Kardiologicznego."}, {"slug": "mediplan", "nazwa": "MediPlan", "skladka": 2.8, "obejmuje": ["ubezpieczony"], "opis": "Organizacja i pokrycie kosztów świadczeń medycznych po nieszczęśliwym wypadku. Pracodawca wybiera jeden z 3 wariantów.", "warianty": [{"nazwa": "podstawowy", "limit_swiadczen": 10, "rehabilitacja": null, "tomografia": false, "rezonans": false, "usg": false}, {"nazwa": "rozszerzony", "limit_swiadczen": 15, "rehabilitacja": "1 świadczenie, maks. 20 zabiegów", "tomografia": false, "rezonans": false, "usg": true}, {"nazwa": "maksymalny", "limit_swiadczen": 20, "rehabilitacja": "1 świadczenie, maks. 40 zabiegów", "tomografia": true, "rezonans": true, "usg": true}], "konsultacje": ["chirurg", "okulista", "otolaryngolog", "ortopeda", "kardiolog", "neurolog", "pulmonolog", "lekarz rehabilitacji", "neurochirurg", "psycholog", "zabiegi ambulatoryjne", "badania laboratoryjne", "badania radiologiczne", "badania USG (od wariantu rozszerzonego)"], "UWAGA": "Cennik branżowy podaje jedną składkę 2,80 zł, bez rozbicia na 3 warianty MediPlanu — do potwierdzenia w taryfie."}], "global_doctors": {"nazwa": "Global Doctors", "skladka": 135.0, "suma_ubezpieczenia": "2 000 000 € na całe życie ubezpieczonego", "zgon_ubezpieczonego": 10000, "ograniczenie_nw": "90 dni", "wiek": {"min": 18, "max": 64}, "warunek_rezydencji": "Zamieszkanie na stałe w Polsce + min. 183 dni pobytu w kraju w ciągu 12 miesięcy przed objęciem ochroną", "moduly": ["nowotwór złośliwy (w tym in situ i ciężka dysplazja przednowotworowa)", "wymiana lub naprawa zastawek serca", "operacja pomostowania tętnic wieńcowych", "operacja neurochirurgiczna", "przeszczep narządu od żywego dawcy lub szpiku kostnego"], "limity": {"leki_po_leczeniu": "50 000 € na całe życie", "swiadczenie_szpitalne": "100 € / dzień, maks. 60 dni na moduł", "dieta_badania_kliniczne": "100 € / dzień, maks. 60 dni na roszczenie", "konsultacje_psychologiczne": "4 wideokonsultacje na moduł (poza ciężką dysplazją)"}, "medycyna_precyzyjna": ["profilowanie molekularne", "testy rodzinne (germinalne)", "przewodnik pacjenta w badaniach klinicznych"], "okres_swiadczeniowy": "36 miesięcy"}, "pakiety_dodatkowe": [{"nr": 1, "slug": "zycie", "nazwa": "Pakiet Życie", "podgrupy_operacji": null, "skladka": [12, 15, 20], "dla_kogo": "Osoby z zobowiązaniami finansowymi, wychowujące dzieci, główni żywiciele rodziny, zawody o podwyższonym ryzyku", "s": {"zgon": [25000, 35000, 45000], "zgon_nw": [45000, 65000, 85000], "zgon_komunikacyjny": [65000, 95000, 125000], "zgon_w_pracy": [65000, 95000, 125000], "zgon_komunikacyjny_w_pracy": [85000, 125000, 165000]}}, {"nr": 2, "slug": "zdrowie-3", "nazwa": "Pakiet Zdrowie (3 podgrupy operacji)", "podgrupy_operacji": 3, "skladka": [18, 28, 40], "s": {"pz_max": [7000, 12000, 20000], "szpital_choroba_90": [40, 60, 100], "leczenie_spec": [2000, 2500, 3500], "operacja": [1500, 2500, 3500], "assistance_chorobowy": [true, true, true]}}, {"nr": 3, "slug": "zdrowie-5", "nazwa": "Pakiet Zdrowie (5 podgrup operacji)", "podgrupy_operacji": 5, "skladka": [17, 27, 39], "zgodny_z_pakietem_glownym": true, "s": {"pz_max": [7000, 12000, 20000], "szpital_choroba_90": [40, 60, 100], "leczenie_spec": [2000, 2500, 3500], "operacja": [1500, 2500, 3500], "assistance_chorobowy": [true, true, true]}}, {"nr": 4, "slug": "wypadek-3", "nazwa": "Pakiet Wypadek (3 podgrupy operacji)", "podgrupy_operacji": 3, "skladka": [12, 16, 20], "s": {"tu_nw": [300, 350, 450], "tu_komunikacyjny": [500, 650, 850], "niezdolnosc_nw": [15000, 20000, 25000], "szpital_nw_90": [100, 150, 200], "operacja_nw": [2000, 3000, 4000], "powiklania_nw": [1000, 1500, 2000]}}, {"nr": 5, "slug": "wypadek-5", "nazwa": "Pakiet Wypadek (5 podgrup operacji)", "podgrupy_operacji": 5, "skladka": [11, 15, 19], "zgodny_z_pakietem_glownym": true, "s": {"tu_nw": [300, 350, 450], "tu_komunikacyjny": [500, 650, 850], "niezdolnosc_nw": [15000, 20000, 25000], "szpital_nw_90": [100, 150, 200], "operacja_nw": [2000, 3000, 4000], "powiklania_nw": [1000, 1500, 2000]}}, {"nr": 6, "slug": "onkologiczny", "nazwa": "Pakiet Onkologiczny", "podgrupy_operacji": null, "skladka": [12, 16, 22], "s": {"pz_nowotworowa": [20000, 25000, 35000], "pz_in_situ": [1000, 2000, 3000], "szpital_nowotwor_90": [55, 65, 75], "leczenie_spec_onko": [1500, 2000, 2500], "assistance_onkologiczny": [true, true, true]}}, {"nr": 7, "slug": "kardiologiczny", "nazwa": "Pakiet Kardiologiczny", "podgrupy_operacji": null, "skladka": [10, 14, 18], "s": {"zgon_zawal_udar": [20000, 30000, 40000], "tu_zawal_udar": [150, 200, 250], "pz_uklad_krazenia": [10000, 15000, 20000], "szpital_zawal_udar_90": [50, 75, 100], "leczenie_spec_kardio": [1500, 2000, 2500], "teleopieka_kardiologiczna": [true, true, true]}}, {"nr": 8, "slug": "dziecko-nw-3", "nazwa": "Pakiet Dziecko NW (3 podgrupy operacji)", "podgrupy_operacji": 3, "skladka": [6, 8, 12], "uwaga": "Jedna składka obejmuje wszystkie dzieci ubezpieczonego do 25. roku życia.", "s": {"zgon_dziecka_nw": [3000, 5000, 7000], "tu_dziecka_nw": [100, 150, 200], "tu_dziecka_komunikacyjny": [250, 350, 450], "szpital_dziecka_nw_90": [120, 160, 200], "operacja_dziecka_nw": [1500, 2000, 2500]}}, {"nr": 9, "slug": "dziecko-nw-5", "nazwa": "Pakiet Dziecko NW (5 podgrup operacji)", "podgrupy_operacji": 5, "skladka": [5, 7, 11], "zgodny_z_pakietem_glownym": true, "uwaga": "Jedna składka obejmuje wszystkie dzieci ubezpieczonego do 25. roku życia.", "s": {"zgon_dziecka_nw": [3000, 5000, 7000], "tu_dziecka_nw": [100, 150, 200], "tu_dziecka_komunikacyjny": [250, 350, 450], "szpital_dziecka_nw_90": [120, 160, 200], "operacja_dziecka_nw": [1500, 2000, 2500]}}, {"nr": 10, "slug": "malzonek-nw-3", "nazwa": "Pakiet Małżonek NW (3 podgrupy operacji)", "podgrupy_operacji": 3, "skladka": [6, 8, 12], "s": {"zgon_malzonka_nw": [10000, 15000, 20000], "tu_malzonka_nw": [150, 200, 250], "tu_malzonka_komunikacyjny": [350, 500, 650], "szpital_malzonka_nw_90": [120, 160, 200], "operacja_malzonka_nw": [1500, 2000, 2500], "powiklania_malzonka_nw": [1000, 1500, 2000]}}, {"nr": 11, "slug": "malzonek-nw-5", "nazwa": "Pakiet Małżonek NW (5 podgrup operacji)", "podgrupy_operacji": 5, "skladka": [5, 7, 11], "zgodny_z_pakietem_glownym": true, "s": {"zgon_malzonka_nw": [10000, 15000, 20000], "tu_malzonka_nw": [150, 200, 250], "tu_malzonka_komunikacyjny": [350, 500, 650], "szpital_malzonka_nw_90": [120, 160, 200], "operacja_malzonka_nw": [1500, 2000, 2500], "powiklania_malzonka_nw": [1000, 1500, 2000]}}]};
+const IMG = {"hero": "https://www.trybloom.ai/img/1dc003fd-e9fd-4b4a-b7fd-bf72ce6654b9", "beauty": "https://www.trybloom.ai/img/4d1a753b-7a5b-4560-b3ea-13aadb69b726", "budownictwo": "https://www.trybloom.ai/img/5513cf8f-ed5d-43ea-81f8-aa86277522c3", "gastronomia-hotelarstwo": "https://www.trybloom.ai/img/4f54d076-5b35-4bd7-9443-ed6964497f9e", "ksiegowosc": "https://www.trybloom.ai/img/65015d8b-2b1e-4c6d-b62d-6b846ea377f8", "nieruchomosci": "https://www.trybloom.ai/img/7a32d553-c84d-46fd-a053-b08d4c483e85", "piekarnictwo": "https://www.trybloom.ai/img/8e9ca736-1796-4987-8f65-0af0d67f08ef", "stomatologia": "https://www.trybloom.ai/img/7648c39e-e96f-4530-affb-12092c3152d3", "transport-ladowy": "https://www.trybloom.ai/img/9cf77657-4596-43bc-9010-ddf003d9ab93"};
+
+const RZ = ['I','II','III'];
+const S = {
+  step:1, br:null, v:0, medi:{}, gd:false, pak:{}, show3:false, adopt:.5,
+  cnt:0, struktura:null, tryb:0, gus:null
+};
+const $ = s => document.querySelector(s);
+const money = n => n.toLocaleString('pl-PL',{minimumFractionDigits:(n%1?2:0),maximumFractionDigits:2}) + ' zł';
+const B = () => DB.branze.find(b=>b.slug===S.br);
+
+/* ---------- format świadczenia ---------- */
+function fmt(code,val){
+  if(val==null) return '—';
+  const m = DB.swiadczenia[code]||{};
+  let s = money(val);
+  if(m.max) s = 'do '+s;
+  if(m.u==='pln_1pct') s += ' / 1%';
+  if(m.u==='pln_dzien') s += ' / dzień';
+  return s;
+}
+
+/* ---------- stepper ---------- */
+const STEPS = ['Branża','Wariant','Rozszerzenia','Struktura','Firma','Zgody'];
+function stepper(){
+  $('#stp').innerHTML = STEPS.map((t,i)=>{
+    const n=i+1, cls = n===S.step?'on':(n<S.step?'done':'');
+    return `<i class="${cls}" ${n<S.step?`onclick="go(${n})"`:''}><b>${n<S.step?'✓':n}</b>${t}</i>`;
+  }).join('');
+}
+function go(n){
+  if(n===2 && !S.br) return;
+  S.step=n;
+  document.querySelectorAll('.step').forEach(e=>e.classList.toggle('on', +e.dataset.s===n));
+  stepper(); bar();
+  if(n===6) summary();
+  window.scrollTo({top:220,behavior:'smooth'});
+}
+window.go = go;
+
+/* ---------- 1. branże ---------- */
+$('#tiles').innerHTML = DB.branze.map(b=>`
+  <button class="tile" data-b="${b.slug}">
+    <div class="ph"><img src="${IMG[b.slug]}" alt="" loading="lazy"></div>
+    <div class="b">
+      <strong>${b.nazwa}</strong><small>${b.opis}</small>
+      <div class="px">od <b>${money(Math.min(...b.skladka))}</b> / os. / mies.</div>
+    </div>
+  </button>`).join('');
+
+document.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{
+  S.br=t.dataset.b; S.v=0; S.pak={};
+  document.querySelectorAll('.tile').forEach(x=>x.classList.toggle('sel',x===t));
+  renderVars(); setTimeout(()=>go(2),140);
+});
+
+/* ---------- 2. warianty ---------- */
+const HERO = ['zgon','pz_max','operacja','szpital_choroba','tu_nw','niezdolnosc_nw','niezdolnosc_choroba_nw','zgon_malzonka','zgon_dziecka'];
+function renderVars(){
+  const b=B();
+  $('#brName').textContent = b.nazwa;
+  $('#varSub').textContent = `Trzy warianty programu dla branży ${b.nazwa.toLowerCase()}. Różnią się nie tylko ceną — mają inny rozkład sum ubezpieczenia, a część z nich w ogóle nie zawiera świadczeń dla rodziny.`;
+
+  const nonMono = b.s.zgon[2] > b.s.zgon[0];
+  $('#varWarn').innerHTML = nonMono
+    ? `<div class="warnbox"><b>Uwaga:</b> w tej branży Wariant III ma <b>wyższą</b> sumę na zgon niż Wariant I (${money(b.s.zgon[2])} vs ${money(b.s.zgon[0])}). Warianty nie są uszeregowane „od najsłabszego do najmocniejszego” — porównuj zakres, nie numer.</div>`
+    : '';
+
+  $('#vars').innerHTML = [0,1,2].map(i=>{
+    const cnt = Object.values(b.s).filter(v=>v[i]!=null).length;
+    const rows = HERO.filter(c=>b.s[c]).map(c=>{
+      const v=b.s[c][i];
+      return `<li class="${v==null?'na':''}"><span>${DB.swiadczenia[c].l}</span><b>${fmt(c,v)}</b></li>`;
+    }).join('');
+    return `<button class="var ${S.v===i?'sel':''}" data-v="${i}"><div class="rb"></div>
+      <h3>Wariant ${RZ[i]}</h3>
+      <div class="price">${money(b.skladka[i])}<s> / os. / mies.</s></div>
+      <div class="cnt">${cnt} świadczeń · część na zgon: ${money(b.skladka_zgon[i])}</div>
+      <ul>${rows}</ul></button>`;
+  }).join('');
+  document.querySelectorAll('.var').forEach(e=>e.onclick=()=>{S.v=+e.dataset.v;renderVars();bar();});
+  renderTable();
+}
+
+function renderTable(){
+  const b=B(); let h='<table><thead><tr><th>Świadczenie</th><th>Wariant I</th><th>Wariant II</th><th>Wariant III</th><th>Karencja</th></tr></thead><tbody>';
+  for(const [g,gl] of Object.entries(DB.grupy)){
+    const codes = Object.keys(b.s).filter(c=>DB.swiadczenia[c].g===g);
+    if(!codes.length) continue;
+    h += `<tr class="grp"><td colspan="5">${gl}</td></tr>`;
+    for(const c of codes){
+      const m=DB.swiadczenia[c];
+      h += `<tr><td>${m.l}${m.dni?` <span style="color:#AAA;font-size:11px">(dni ${m.dni})</span>`:''}</td>` +
+        [0,1,2].map(i=>{
+          const v=b.s[c][i];
+          return `<td class="v ${v==null?'no':''} ${i===S.v&&v!=null?'hl':''}">${fmt(c,v)}</td>`;
+        }).join('') + `<td class="k">${m.k}</td></tr>`;
+    }
+  }
+  $('#tbl').innerHTML = h+'</tbody></table>';
+}
+
+/* ---------- 3. rozszerzenia ---------- */
+function renderAdd(){
+  $('#medi').innerHTML = DB.mediopieka.map(m=>`
+    <div class="add ${S.medi[m.slug]?'sel':''}" data-m="${m.slug}">
+      <div class="cb">${S.medi[m.slug]?'✓':''}</div>
+      <div class="bd"><strong>${m.nazwa}</strong><small>${m.opis||''}</small></div>
+      <div class="pr">${money(m.skladka)}<s>/os./mies.</s></div>
+    </div>`).join('');
+
+  const g=DB.global_doctors;
+  $('#gd').innerHTML = `
+    <div class="add ${S.gd?'sel':''}" data-g="1" style="grid-column:span 2">
+      <div class="cb">${S.gd?'✓':''}</div>
+      <div class="bd"><strong>${g.nazwa}</strong>
+        <small>Organizacja i pokrycie kosztów leczenia w klinikach za granicą — nowotwory, zastawki serca, by-passy, neurochirurgia, przeszczepy. Suma <b>${g.suma_ubezpieczenia}</b>. Dodatkowo zgon ubezpieczonego ${money(g.zgon_ubezpieczonego)}.<br><b style="color:var(--warn)">Wiek ${g.wiek.min}–${g.wiek.max} lat</b> · wymagane 183 dni pobytu w PL w ostatnich 12 mies.</small></div>
+      <div class="pr">${money(g.skladka)}<s>/os./mies.</s></div>
+    </div>`;
+
+  const list = DB.pakiety_dodatkowe.filter(p=>S.show3 || p.podgrupy_operacji!==3);
+  $('#pak').innerHTML = list.map(p=>{
+    const on = S.pak[p.slug]!=null;
+    const vi = S.pak[p.slug]??0;
+    const bad = p.podgrupy_operacji===3;
+    return `<div class="add ${on?'sel':''}" data-p="${p.slug}">
+      <div class="cb">${on?'✓':''}</div>
+      <div class="bd"><strong>${p.nazwa}</strong>
+        ${bad?'<small style="color:var(--warn)">⚠ Niezgodny z pakietem głównym (5 podgrup operacji).</small>':''}
+        ${p.uwaga?`<small>${p.uwaga}</small>`:''}
+        <div class="vsel" onclick="event.stopPropagation()">${[0,1,2].map(i=>
+          `<button class="${on&&vi===i?'on':''}" data-pv="${p.slug}|${i}">W${RZ[i]} · ${money(p.skladka[i])}</button>`).join('')}</div>
+      </div>
+      <div class="pr">${on?money(p.skladka[vi]):money(p.skladka[0])}<s>/os./mies.</s></div>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('[data-m]').forEach(e=>e.onclick=()=>{const k=e.dataset.m;S.medi[k]=!S.medi[k];renderAdd();bar();});
+  document.querySelectorAll('[data-g]').forEach(e=>e.onclick=()=>{S.gd=!S.gd;renderAdd();bar();});
+  document.querySelectorAll('[data-p]').forEach(e=>e.onclick=()=>{const k=e.dataset.p; if(S.pak[k]!=null) delete S.pak[k]; else S.pak[k]=0; renderAdd();bar();});
+  document.querySelectorAll('[data-pv]').forEach(e=>e.onclick=()=>{const[k,i]=e.dataset.pv.split('|');S.pak[k]=+i;renderAdd();bar();});
+}
+$('#tog35').onclick=()=>{S.show3=!S.show3;$('#tog35').textContent=S.show3?'ukryj warianty 3-podgrupowe':'pokaż też warianty 3-podgrupowe';renderAdd();};
+$('#adopt').oninput = e => { S.adopt = +e.target.value/100; $('#adoptV').textContent = e.target.value+'%'; bar(); };
+
+/* ---------- składka ---------- */
+function calc(){
+  if(!S.br) return {baza:0,opt:[],max:0};
+  const b=B(); const baza=b.skladka[S.v]; const opt=[];
+  DB.mediopieka.forEach(m=>{ if(S.medi[m.slug]) opt.push({n:m.nazwa,v:m.skladka}); });
+  if(S.gd) opt.push({n:'Global Doctors',v:DB.global_doctors.skladka});
+  Object.entries(S.pak).forEach(([k,i])=>{
+    const p=DB.pakiety_dodatkowe.find(x=>x.slug===k);
+    opt.push({n:`${p.nazwa} · W${RZ[i]}`,v:p.skladka[i]});
+  });
+  return {baza, opt, max: opt.reduce((a,x)=>a+x.v,0)};
+}
+function bar(){
+  const on = S.br && S.step>=2 && S.step<7;
+  $('#bar').classList.toggle('on',!!on);
+  if(!on) return;
+  const {baza,opt,max}=calc(); const n=S.cnt; const p=S.adopt;
+  const min = baza*n, top = (baza+max)*n, est = min + max*n*p;
+
+  $('#adoptBox').style.display = opt.length ? 'block' : 'none';
+  $('#pp').innerHTML = money(baza)+' <em>/ mies.</em>';
+  $('#pc').innerHTML = n ? money(est)+` <em>· ${n} os.</em>` : '<em style="font-size:15px">podaj strukturę</em>';
+  $('#py').innerHTML = !n ? '—' : (max ? money(min)+' – '+money(top) : '<em style="font-size:15px">bez rozszerzeń</em>');
+
+  $('#bd2i').innerHTML =
+      `<div class="r" style="color:#fff"><span><b>Pakiet główny</b> — obowiązuje całą grupę, koszt pewny</span><b></b></div>`
+    + `<div class="r"><span>${B().nazwa} · Wariant ${RZ[S.v]} × ${n} os.</span><b>${money(min)} / mies.</b></div>`
+    + (opt.length
+        ? `<div class="r" style="border-top:1px solid #444;margin-top:10px;padding-top:12px;color:#fff"><span><b>Rozszerzenia</b> — wybiera pracownik, płacisz Ty</span><b></b></div>`
+          + opt.map(i=>`<div class="r"><span>${i.n}</span><b>${money(i.v)} / os. · ${money(i.v*n)} gdyby wzięli wszyscy</b></div>`).join('')
+          + `<div class="r" style="border-top:1px solid #444;margin-top:10px;padding-top:12px;color:#fff"><span>Przy założeniu <b>${Math.round(p*100)}%</b> adopcji</span><b>${money(est)} / mies. · ${money(est*12)} / rok</b></div>`
+          + `<div class="r"><span>Widełki: od zera do pełnej adopcji</span><b>${money(min)} – ${money(top)} / mies.</b></div>`
+        : `<div class="r" style="border-top:1px solid #444;margin-top:10px;padding-top:12px"><span>Nie udostępniasz rozszerzeń — koszt jest pewny: ${money(min*12)} / rok.</span><b></b></div>`);
+}
+$('#brb').onclick=()=>{const e=$('#bd2');e.classList.toggle('on');$('#brb').textContent=e.classList.contains('on')?'zwiń ▴':'rozbij składkę ▾';};
+
+/* ---------- 4. struktura zespołu (parsowanie WYŁĄCZNIE lokalne) ---------- */
+const DZIS = new Date();
+const W_MIN = 15, W_MAX = 70;   // z ulotek EŻwB, nie 18–69 jak w arkuszu
+
+function peselOK(p){
+  if(!/^\d{11}$/.test(p)) return false;
+  const w=[1,3,7,9,1,3,7,9,1,3];
+  const s=w.reduce((a,x,i)=>a+x*+p[i],0);
+  return (10-(s%10))%10 === +p[10];
+}
+function zPesela(p){
+  const rr=+p.slice(0,2), mm=+p.slice(2,4), dd=+p.slice(4,6);
+  const stul={0:1900,20:2000,40:2100,60:2200,80:1800}[Math.floor(mm/20)*20];  // ← czego brakuje w arkuszu
+  if(stul===undefined) return null;
+  const d=new Date(stul+rr, (mm%20)-1, dd);
+  return { d, plec: (+p[9])%2 ? 'M':'K' };
+}
+function lata(d){
+  let w = DZIS.getFullYear()-d.getFullYear();
+  const m = DZIS.getMonth()-d.getMonth();
+  if(m<0 || (m===0 && DZIS.getDate()<d.getDate())) w--;   // pełne lata, nie dni/365
+  return w;
+}
+function parsuj(txt){
+  const os=[], zle=[];
+  txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).forEach((l,i)=>{
+    const czyste=l.replace(/[\s\u00A0]/g,'');
+    let m;
+    if(/^\d{11}$/.test(czyste)){
+      if(!peselOK(czyste)) return zle.push({l, p:'PESEL — błędna suma kontrolna'});
+      const r=zPesela(czyste);
+      if(!r) return zle.push({l, p:'PESEL — nieprawidłowy miesiąc'});
+      return os.push({wiek:lata(r.d), plec:r.plec});
+    }
+    if((m=l.match(/^(\d{4})-(\d{2})-(\d{2})\s*[;,\t ]\s*([KMkm])$/))){
+      return os.push({wiek:lata(new Date(+m[1],+m[2]-1,+m[3])), plec:m[4].toUpperCase()});
+    }
+    if((m=l.match(/^(\d{4})\s*[;,\t ]\s*([KMkm])$/))){
+      return os.push({wiek:DZIS.getFullYear()-+m[1], plec:m[2].toUpperCase()});
+    }
+    zle.push({l, p:'nierozpoznany format'});
+  });
+  return {os, zle};
+}
+
+$('#demo').onclick=()=>{
+  $('#paste').value = ['85031255516','99113012345','76092399101','01251500000','06280200000','1978 M','1995 K','2003-04-11 M','1969 K','92050612345'].join('\n');
+};
+
+$('#parse').onclick=()=>{
+  const {os,zle} = parsuj($('#paste').value);
+  const poza = os.filter(o=>o.wiek<W_MIN||o.wiek>W_MAX);
+  const ok = os.filter(o=>o.wiek>=W_MIN&&o.wiek<=W_MAX);
+  const n = ok.length;
+
+  if(!n){ $('#strOut').innerHTML='<div class="warnbox">Nie rozpoznaliśmy żadnej osoby. Wklej PESEL-e (11 cyfr), daty <code>RRRR-MM-DD K/M</code> albo roczniki <code>RRRR K/M</code>.</div>'; $('#b4s').disabled=true; return; }
+
+  S.struktura = {}; ok.forEach(o=>{ const k=o.plec+o.wiek; S.struktura[k]=(S.struktura[k]||0)+1; });
+  S.cnt = n;
+
+  const K=ok.filter(o=>o.plec==='K').length, M=n-K;
+  const sr=(ok.reduce((a,o)=>a+o.wiek,0)/n);
+  const kub=[[15,24],[25,34],[35,44],[45,54],[55,70]];
+  const max=Math.max(...kub.map(([a,b])=>ok.filter(o=>o.wiek>=a&&o.wiek<=b).length),1);
+
+  const zaDuzo = n>100, zaMalo = n<2;
+  $('#strOut').innerHTML = `
+    <div style="border:1px solid var(--line);padding:20px">
+      <div style="display:flex;gap:26px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line)">
+        <div><div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#9A9A9A">Osób</div><div style="font-size:28px;font-weight:900;color:${zaDuzo||zaMalo?'var(--red)':'var(--ink)'}">${n}</div></div>
+        <div><div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#9A9A9A">Kobiety / Mężczyźni</div><div style="font-size:28px;font-weight:900">${K} / ${M}</div></div>
+        <div><div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#9A9A9A">Średni wiek</div><div style="font-size:28px;font-weight:900">${sr.toFixed(1)}</div></div>
+      </div>
+      <div style="margin-top:16px">${kub.map(([a,b])=>{
+        const c=ok.filter(o=>o.wiek>=a&&o.wiek<=b).length;
+        return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:12px">
+          <span style="width:52px;color:var(--gray)">${a}–${b}</span>
+          <span style="flex:1;background:var(--surf);height:16px"><span style="display:block;height:16px;width:${c/max*100}%;background:var(--red)"></span></span>
+          <span style="width:22px;text-align:right;font-weight:700">${c}</span></div>`;
+      }).join('')}</div>
+      <p style="font-size:11.5px;color:#9A9A9A;margin-top:14px">Do ERGO Hestii wysyłamy tylko te liczby — ${Object.keys(S.struktura).length} pozycji siatki wiek × płeć.</p>
+    </div>
+    ${zaDuzo?'<div class="warnbox" style="margin-top:12px"><b>'+n+' osób — program obejmuje maks. 100.</b> Przy większych zespołach opiekun przygotuje ofertę indywidualną.</div>':''}
+    ${zaMalo?'<div class="warnbox" style="margin-top:12px"><b>Minimum to 2 osoby.</b></div>':''}
+    ${poza.length?`<div class="warnbox" style="margin-top:12px"><b>${poza.length} os. poza zakresem wieku ${W_MIN}–${W_MAX} lat</b> — nie wchodzą do ubezpieczenia i nie liczymy ich do składki.</div>`:''}
+    ${zle.length?`<div class="warnbox" style="margin-top:12px"><b>${zle.length} wierszy nierozpoznanych:</b><br>${zle.slice(0,4).map(z=>`<code>${z.l.slice(0,18)}</code> — ${z.p}`).join('<br>')}${zle.length>4?'<br>…':''}</div>`:''}`;
+
+  waliduj4();
+  bar();
+};
+
+document.querySelectorAll('#tryb button').forEach(b=>b.onclick=()=>{
+  S.tryb=+b.dataset.t;
+  document.querySelectorAll('#tryb button').forEach(x=>x.classList.toggle('on',x===b));
+  const reczny = S.tryb===1;
+  $('#strGrid').style.display = reczny?'none':'grid';
+  $('#noteStr').style.display = reczny?'none':'block';
+  $('#strManual').style.display = reczny?'grid':'none';
+  if(reczny){ S.struktura=null; S.cnt=+$('#cntM').value||0; }
+  else { S.cnt = S.struktura ? Object.values(S.struktura).reduce((a,x)=>a+x,0) : 0; }
+  waliduj4(); bar();
+});
+$('#cntM').oninput = e => { S.cnt = Math.max(0,Math.min(999,+e.target.value||0)); waliduj4(); bar(); };
+function waliduj4(){ $('#b4s').disabled = !(S.cnt>=2 && S.cnt<=100); }
+
+/* ---------- 5. GUS ---------- */
+function nipOK(v){
+  const d=(v||'').replace(/\D/g,''); if(d.length!==10) return false;
+  const w=[6,5,7,2,3,4,5,6,7];
+  const s=w.reduce((a,x,i)=>a+x*+d[i],0)%11;
+  return s!==10 && s===+d[9];
+}
+const PKD = {beauty:['96.02.Z','Fryzjerstwo i pozostałe zabiegi kosmetyczne'],budownictwo:['43.39.Z','Wykonywanie pozostałych robót budowlanych wykończeniowych'],'gastronomia-hotelarstwo':['56.10.A','Restauracje i inne stałe placówki gastronomiczne'],ksiegowosc:['69.20.Z','Działalność rachunkowo-księgowa; doradztwo podatkowe'],nieruchomosci:['68.31.Z','Pośrednictwo w obrocie nieruchomościami'],piekarnictwo:['10.71.Z','Produkcja pieczywa; produkcja świeżych wyrobów ciastkarskich'],stomatologia:['86.23.Z','Praktyka lekarska dentystyczna'],'transport-ladowy':['49.41.Z','Transport drogowy towarów']};
+
+$('#btnGus').onclick=()=>{
+  const v=$('#nip').value, ok=nipOK(v);
+  $('#fNip').classList.toggle('bad',!ok);
+  if(!ok){$('#gusOut').innerHTML='';$('#rest').style.display='none';$('#b4').disabled=true;return;}
+  const mode=$('#sim').value;
+  $('#gusOut').innerHTML='<div class="gus"><div class="bd" style="grid-template-columns:1fr;color:#8A8A8A">Odpytuję rejestr REGON…</div></div>';
+  setTimeout(()=>gusOut(mode,v),650);
+};
+function gusOut(mode,nip){
+  if(mode==='none'){
+    $('#gusOut').innerHTML=`<div class="warnbox"><b>Nie znaleźliśmy firmy o NIP ${nip} w rejestrze REGON.</b> Sprawdź numer albo wpisz dane ręcznie.<br><button class="btn ghost" style="margin-top:10px" onclick="manual()">Wpisz dane ręcznie</button></div>`;
+    $('#rest').style.display='none';$('#b4').disabled=true;return;
+  }
+  if(mode==='down'){
+    $('#gusOut').innerHTML=`<div class="warnbox"><b>Rejestr REGON chwilowo nie odpowiada.</b> Nie blokujemy Cię — możesz wpisać dane ręcznie, zweryfikujemy je po naszej stronie.<br><button class="btn ghost" style="margin-top:10px" onclick="manual()">Wpisz dane ręcznie</button></div>`;
+    $('#rest').style.display='none';$('#b4').disabled=true;return;
+  }
+  const b=B();
+  const [kod,opis] = PKD[S.br];
+  const emp = mode==='big' ? '250+' : '10 – 49';
+  S.gus={nip,nazwa:'DEMO '+b.nazwa.toUpperCase()+' SP. Z O.O.',kod,opis};
+
+  $('#gusOut').innerHTML = `
+  <div class="gus">
+    <div class="hd"><span>Dane z rejestru REGON (GUS)</span><span class="pill ok">Znaleziono</span></div>
+    <div class="bd">
+      <dl><dt>Nazwa</dt><dd>${S.gus.nazwa}</dd></dl>
+      <dl><dt>NIP / REGON</dt><dd>${nip} / 14${nip.slice(0,7)}</dd></dl>
+      <dl><dt>Adres</dt><dd>ul. Przykładowa 12/3<br>80-309 Gdańsk</dd></dl>
+      <dl><dt>PKD przeważające</dt><dd>${kod}<br><span style="font-weight:400;font-size:12.5px;color:var(--gray)">${opis}</span></dd></dl>
+      <dl><dt>Forma prawna</dt><dd>Sp. z o.o.</dd></dl>
+      <dl><dt>Klasa wielkości (GUS)</dt><dd>${emp} pracowników</dd></dl>
+    </div>
+  </div>` + (mode==='big' ? `<div class="warnbox"><b>GUS podaje klasę wielkości 250+.</b> Program obejmuje 2–100 osób. Jeśli ubezpieczasz mniejszą grupę (np. jeden oddział), opiekun to potwierdzi.</div>`:'');
+
+  $('#rest').style.display='grid'; $('#b4').disabled = false;
+}
+window.manual=()=>{$('#gusOut').innerHTML='<div class="note">Tryb ręczny — dane zweryfikuje opiekun przed wystawieniem polisy.</div>';$('#rest').style.display='grid';$('#b4').disabled=false;};
+
+
+/* ---------- 5. zgody ---------- */
+const CONS=[
+  ['z1',1,'Zgoda na objęcie grupowym ubezpieczeniem na życie ERGO Życie w Biznesie','Wnioskuję o zawarcie umowy grupowego ubezpieczenia na życie ERGO Życie w Biznesie na warunkach określonych w OWU (kod: EZwB 01/25) oraz OWU ubezpieczeń dodatkowych, które wybrałem w tym wniosku.'],
+  ['z2',1,'Oświadczenie o zapoznaniu się z OWU i kartami produktu','Oświadczam, że przed złożeniem wniosku otrzymałem i zapoznałem się z Ogólnymi warunkami ubezpieczenia (EZwB 01/25), OWU MediOpieka (MA 01/25) oraz OWU Global Doctors (GD-GZ 01/25), w tym z wyłączeniami i ograniczeniami odpowiedzialności.'],
+  ['z3',1,'Zgoda na przetwarzanie danych osobowych (RODO)','Administratorem danych jest Sopockie Towarzystwo Ubezpieczeń na Życie ERGO Hestia S.A. Dane przetwarzamy w celu zawarcia i wykonania umowy ubezpieczenia (art. 6 ust. 1 lit. b RODO) oraz w celach wynikających z prawnie uzasadnionych interesów administratora.'],
+  ['z4',1,'Oświadczenie o liczbie i wieku osób zgłaszanych do ubezpieczenia','Oświadczam, że osoby zgłaszane do ubezpieczenia są aktywne zawodowo, mają od 15 do 70 lat, a ich liczba mieści się w przedziale 2–100.'],
+  ['z5',1,'Oświadczenie o statusie nowego klienta','Oświadczam, że firma nie posiada obecnie umowy grupowego ubezpieczenia na życie w ERGO Hestii — oferta branżowa dotyczy nowych klientów.'],
+  ['z6',0,'Zgoda marketingowa — e-mail','Zgoda na otrzymywanie informacji handlowych drogą elektroniczną. Dobrowolna, można wycofać w każdej chwili.'],
+  ['z7',0,'Zgoda marketingowa — telefon','Zgoda na kontakt telefoniczny w celach marketingowych. Dobrowolna, można wycofać w każdej chwili.']
+];
+$('#cons').innerHTML = CONS.map(([id,req,lab,full])=>`
+  <div class="crow" id="row_${id}">
+    <input type="checkbox" id="${id}" data-req="${req}">
+    <div class="tx"><label for="${id}">${lab} ${req?'<i>*</i>':'<span style="color:#9A9A9A">(dobrowolna)</span>'}</label>
+      <button onclick="document.getElementById('row_${id}').classList.toggle('open')">czytaj całość</button>
+      <p>${full}</p></div>
+  </div>`).join('') + '<p style="font-size:12px;color:var(--gray);margin-top:14px"><i>*</i> zgody wymagane do złożenia wniosku</p>';
+
+function chk(){
+  const need=[...document.querySelectorAll('#cons input[data-req="1"]')];
+  $('#send').disabled = !need.every(i=>i.checked);
+}
+document.querySelectorAll('#cons input').forEach(i=>i.onchange=chk);
+
+function summary(){
+  const {baza,opt,max}=calc(); const n=S.cnt; const p=S.adopt;
+  const min=baza*n, top=(baza+max)*n, est=min+max*n*p;
+  $('#sum').innerHTML = `<h4>Twój wniosek</h4>
+    <div class="r"><span>Firma</span><b>${S.gus?S.gus.nazwa:'—'}</b></div>
+    <div class="r"><span>NIP</span><b>${S.gus?S.gus.nip:'—'}</b></div>
+    <div class="r"><span>Program</span><b>${B().nazwa} · Wariant ${RZ[S.v]}</b></div>
+    <div class="r"><span>Osób do ubezpieczenia</span><b>${n}</b></div>
+    <div class="r"><span>Struktura wiek × płeć</span><b>${S.struktura?Object.keys(S.struktura).length+" pozycji (bez danych osobowych)":"arkusz mailem"}</b></div>
+    <div class="r"><span>Pakiet główny</span><b>${money(baza)} / os. / mies.</b></div>
+    <div class="r tot"><span>Koszt pewny</span><span>${money(min)} / mies.</span></div>
+    <h4 style="margin-top:26px">Rozszerzenia udostępnione zespołowi</h4>
+    ${opt.length
+      ? opt.map(i=>`<div class="r"><span>${i.n}</span><b>${money(i.v)} / os.</b></div>`).join('')
+        + `<div class="r"><span>Przy ${Math.round(p*100)}% adopcji</span><b>≈ ${money(est)} / mies.</b></div>
+           <div class="r tot"><span>Widełki kosztu</span><span>${money(min)} – ${money(top)}</span></div>
+           <p style="font-size:12px;color:var(--gray);margin-top:10px">Ostateczna składka wyjdzie <b>po zebraniu deklaracji</b> od pracowników — każdy sam wskaże, które rozszerzenia bierze. Opiekun potwierdzi kwotę przed wystawieniem polisy.</p>`
+      : '<p style="font-size:13px;color:var(--gray)">Nie udostępniasz rozszerzeń — składka jest z góry znana i nie zmieni się po zebraniu deklaracji.</p>'}`;
+}
+
+$('#send').onclick=()=>{
+  const nr = 'EZB/2026/'+String(Math.floor(Math.random()*9000+1000));
+  $('#wnr').textContent=nr;
+  $('#xlsBox').style.display = S.struktura ? 'none' : 'flex';
+  $('#komplet').style.display = S.struktura ? 'block' : 'none';
+  $('#wmail').textContent = $('#mail').value || 'twój adres e-mail';
+  go(7); $('#bar').classList.remove('on');
+};
+
+stepper(); renderAdd();
+</script>
