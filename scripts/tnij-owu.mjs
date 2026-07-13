@@ -29,15 +29,20 @@ const zapisz = (nazwa, dane) => {
 
 console.log('Tnę OWU do static/dane/owu/:');
 
+// pdfplumber wplata w treść stopkę strony „Spis treści StronaNNN"
+// (na końcu punktu i w miejscach łamania stron) — czyścimy globalnie
+const czysc = (t) => t.replace(/\s*Spis treści Strona\s*\d+\s*/g, ' ').trim();
+const czyscPunkty = (lista) => (lista ?? []).map((x) => ({ ...x, tresc: czysc(x.tresc) }));
+
 // Rozdziały: tylko pola potrzebne w zakładce „Ograniczenia"
 const odchudzRozdzial = (r) => ({
 	nr: r.nr,
 	nazwa: r.nazwa,
 	strona: r.strona,
 	kod: r.kod_swiadczenia ?? null,
-	karencja: r.karencja ?? [],
-	wylaczenia: r.wylaczenia ?? [],
-	dokumenty: r.dokumenty ?? []
+	karencja: czyscPunkty(r.karencja),
+	wylaczenia: czyscPunkty(r.wylaczenia),
+	dokumenty: czyscPunkty(r.dokumenty)
 });
 zapisz(
 	'rozdzialy-ezb.json',
@@ -70,9 +75,33 @@ zapisz('operacje-indeks.json', {
 
 zapisz('slowniczek.json', mo.slowniczek);
 
+// Najczęstsze wyłączenia: źródło ma tylko prefiksy treści — pełne brzmienia
+// odzyskujemy z rozdziałów, grupując identyczne teksty z listą rozdziałów.
+const wspolne = owu.wylaczenia_wspolne_top.map((w) => {
+	const brzmienia = new Map(); // pełna treść → [{nr, nazwa}]
+	for (const r of owu.rozdzialy) {
+		for (const x of r.wylaczenia ?? []) {
+			if (!x.tresc.startsWith(w.tresc_prefix)) continue;
+			const tresc = czysc(x.tresc);
+			if (!brzmienia.has(tresc)) brzmienia.set(tresc, []);
+			brzmienia.get(tresc).push({ nr: r.nr, nazwa: r.nazwa });
+		}
+	}
+	return {
+		tresc_prefix: w.tresc_prefix,
+		liczba_wystapien: w.liczba_wystapien,
+		brzmienia: [...brzmienia.entries()]
+			.sort((a, b) => b[1].length - a[1].length)
+			.map(([tresc, rozdzialy]) => ({ tresc, rozdzialy }))
+	};
+});
+const bezPelnych = wspolne.filter((w) => !w.brzmienia.length);
+if (bezPelnych.length)
+	console.warn(`  UWAGA: ${bezPelnych.length} prefiksów bez pełnej treści w rozdziałach`);
+
 // Metadane do zakładki „Ograniczenia": najczęstsze wyłączenia + statystyki
 zapisz('owu-meta.json', {
-	wylaczenia_wspolne_top: owu.wylaczenia_wspolne_top,
+	wylaczenia_wspolne_top: wspolne,
 	statystyki: owu.statystyki,
 	mediopieka_statystyki: mo.statystyki
 });

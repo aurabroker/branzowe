@@ -12,8 +12,16 @@
 		wylaczenia: Punkt[];
 		dokumenty: Punkt[];
 	}
+	interface Brzmienie {
+		tresc: string;
+		rozdzialy: { nr: number; nazwa: string }[];
+	}
 	interface Meta {
-		wylaczenia_wspolne_top: { tresc_prefix: string; liczba_wystapien: number }[];
+		wylaczenia_wspolne_top: {
+			tresc_prefix: string;
+			liczba_wystapien: number;
+			brzmienia: Brzmienie[];
+		}[];
 		statystyki: { rozdzialow: number; punktow_wylaczen: number; punktow_karencji: number };
 		mediopieka_statystyki: { swiadczen_mediopieki: number; punktow_wylaczen: number };
 	}
@@ -49,7 +57,6 @@
 		)
 	);
 
-	const skroc = (t: string) => (t.length > 600 ? t.slice(0, 600) + '…' : t);
 </script>
 
 <h2 class="naglowek">Karencje i wyłączenia odpowiedzialności</h2>
@@ -70,10 +77,27 @@
 			dotyczą.
 		</p>
 		{#each meta.wylaczenia_wspolne_top as w (w.tresc_prefix)}
-			<div class="wsp">
-				<div class="ile">DOTYCZY {w.liczba_wystapien} ŚWIADCZEŃ</div>
-				{w.tresc_prefix}…
-			</div>
+			<details class="wsp">
+				<summary>
+					<span class="ile">DOTYCZY {w.liczba_wystapien} ŚWIADCZEŃ</span>
+					{w.tresc_prefix}…
+					<span class="rozwin">pełna treść ▾</span>
+				</summary>
+				{#if w.brzmienia.length > 1}
+					<p class="uwagaBrzmienia">
+						Brzmienie różni się w szczegółach między rozdziałami — poniżej wszystkie warianty z
+						OWU, każdy z listą świadczeń, których dotyczy.
+					</p>
+				{/if}
+				{#each w.brzmienia as b, i (i)}
+					<div class="brzmienie">
+						<div class="tresc">{b.tresc}</div>
+						<div class="dotyczy">
+							Dotyczy: {b.rozdzialy.map((r) => `${r.nazwa} (R${r.nr})`).join(' · ')}
+						</div>
+					</div>
+				{/each}
+			</details>
 		{/each}
 	</section>
 {/if}
@@ -102,11 +126,11 @@
 					<div class="szcz">
 						{#if r.wylaczenia.length}
 							<h4 class="wyl">Wyłączenia ({r.wylaczenia.length})</h4>
-							{#each r.wylaczenia as w, i (i)}<div class="p">{skroc(w.tresc)}</div>{/each}
+							{#each r.wylaczenia as w, i (i)}<div class="p">{w.tresc}</div>{/each}
 						{/if}
 						{#if r.karencja.length}
 							<h4 class="kar">Karencje ({r.karencja.length})</h4>
-							{#each r.karencja as k, i (i)}<div class="p">{skroc(k.tresc)}</div>{/each}
+							{#each r.karencja as k, i (i)}<div class="p">{k.tresc}</div>{/each}
 						{/if}
 					</div>
 				</details>
@@ -137,7 +161,7 @@
 					<div class="szcz">
 						{#if r.wylaczenia.length}
 							<h4 class="wyl">Wyłączenia ({r.wylaczenia.length})</h4>
-							{#each r.wylaczenia as w, i (i)}<div class="p">{skroc(w.tresc)}</div>{/each}
+							{#each r.wylaczenia as w, i (i)}<div class="p">{w.tresc}</div>{/each}
 						{/if}
 					</div>
 				</details>
@@ -177,17 +201,63 @@
 		margin-bottom: 12px;
 	}
 	.wsp {
-		padding: 14px 16px;
 		border: 1px solid var(--line);
 		margin-bottom: 8px;
 		font-size: 13.5px;
 	}
+	.wsp > summary {
+		display: block;
+		padding: 14px 16px;
+		cursor: pointer;
+		list-style: none;
+	}
+	.wsp > summary::-webkit-details-marker {
+		display: none;
+	}
+	.wsp[open] > summary {
+		border-bottom: 1px solid var(--line);
+		background: var(--surf2);
+	}
+	.rozwin {
+		display: block;
+		margin-top: 6px;
+		color: var(--red);
+		font-size: 12px;
+		text-decoration: underline;
+	}
+	.wsp[open] .rozwin {
+		display: none;
+	}
 	.ile {
+		display: block;
 		font-size: 11px;
 		color: var(--red);
 		font-weight: 700;
 		letter-spacing: 0.6px;
 		margin-bottom: 6px;
+	}
+	.uwagaBrzmienia {
+		padding: 12px 16px 0;
+		font-size: 12.5px;
+		color: var(--warn);
+	}
+	.brzmienie {
+		padding: 12px 16px;
+		border-top: 1px dotted #eee;
+	}
+	.brzmienie:first-of-type {
+		border-top: 0;
+	}
+	.tresc {
+		font-size: 12.5px;
+		color: var(--gray);
+		line-height: 1.6;
+		white-space: pre-line;
+	}
+	.dotyczy {
+		margin-top: 8px;
+		font-size: 11.5px;
+		color: #9a9a9a;
 	}
 	.search {
 		width: 100%;
