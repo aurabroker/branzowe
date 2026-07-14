@@ -70,7 +70,34 @@ function zawieraPesel(dane: z.infer<typeof schemat>): boolean {
 	return /\d{11}/.test(JSON.stringify(kopia));
 }
 
-export const POST: RequestHandler = async ({ request, platform }) => {
+/**
+ * Arkusz struktury wiekowej z assetów Workera (base64) — dołączany do maila,
+ * gdy klient nie podał struktury w kreatorze. Brak arkusza nie blokuje wysyłki.
+ */
+async function pobierzArkusz(
+	platform: Readonly<App.Platform> | undefined,
+	fetchSvelteKit: typeof fetch,
+	origin: string
+): Promise<{ filename: string; content: string } | undefined> {
+	const sciezka = '/dokumenty/lista-ubezpieczonych.xlsx';
+	try {
+		const zapytanie = new Request(origin + sciezka);
+		const odp = platform?.env?.ASSETS
+			? await platform.env.ASSETS.fetch(zapytanie)
+			: await fetchSvelteKit(sciezka);
+		if (!odp.ok) return undefined;
+		const { Buffer } = await import('node:buffer');
+		return {
+			filename: 'lista-ubezpieczonych.xlsx',
+			content: Buffer.from(await odp.arrayBuffer()).toString('base64')
+		};
+	} catch (e) {
+		console.error('pobierzArkusz:', e);
+		return undefined;
+	}
+}
+
+export const POST: RequestHandler = async ({ request, platform, fetch, url }) => {
 	const env = platform?.env;
 	if (!env?.SUPABASE_URL) error(503, 'Backend nieskonfigurowany');
 
@@ -148,6 +175,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 	}
 
 	// maile: błąd nie wycofuje wniosku — logujemy do zdarzenia i jedziemy dalej
+	const zalacznik = dane.struktura ? undefined : await pobierzArkusz(platform, fetch, url.origin);
 	const bledyMaili = await wyslijMaile(env, {
 		nrWniosku: wpis.nr_wniosku,
 		branzaNazwa: db.branze.find((b) => b.slug === dane.branza)!.nazwa,
@@ -160,7 +188,8 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 		imie: dane.kontakt.imie,
 		telefon: dane.kontakt.telefon,
 		wyliczenie: w,
-		adopcja: dane.zalozona_adopcja
+		adopcja: dane.zalozona_adopcja,
+		zalacznik
 	}).catch((e) => [{ adresat: '-', blad: String(e) }]);
 
 	const zdarzenia = [

@@ -33,9 +33,9 @@
 				<div>
 					<strong>lista-ubezpieczonych.xlsx</strong>
 					<small>
-						Arkusz zgłoszeniowy ERGO Hestii dostaniesz w mailu z potwierdzeniem. Wypełnij dane osób
-						przystępujących i odeślij — każdy pracownik składa własną deklarację z wyborem
-						rozszerzeń, dopiero wtedy znamy ostateczną składkę.
+						Arkusz struktury wiekowej jest w załączniku maila z potwierdzeniem. Wypełnij dane osób
+						przystępujących i odeślij odpowiedzią na tę wiadomość — każdy pracownik składa własną
+						deklarację z wyborem rozszerzeń, dopiero wtedy znamy ostateczną składkę.
 					</small>
 				</div>
 			</div>

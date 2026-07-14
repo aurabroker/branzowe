@@ -15,6 +15,8 @@ export interface DaneMaila {
 	telefon: string;
 	wyliczenie: Wyliczenie;
 	adopcja: number;
+	/** arkusz struktury wiekowej (base64) — dołączany, gdy wniosek niekompletny */
+	zalacznik?: { filename: string; content: string };
 }
 
 const stopka = `<p style="color:#8a8a8a;font-size:12px;margin-top:28px">
@@ -47,7 +49,7 @@ export function mailDoKlienta(d: DaneMaila): { subject: string; html: string } {
 ${
 	d.kompletny
 		? `<p style="background:#E7F5EC;padding:12px 16px;font-size:14px"><b>Wniosek jest kompletny.</b> Strukturę wiekową już mamy — nie musisz nic odsyłać.</p>`
-		: `<p style="background:#FFF6E6;padding:12px 16px;font-size:14px"><b>Do wystawienia polisy potrzebujemy jeszcze struktury wiekowej zespołu.</b> Arkusz zgłoszeniowy (lista-ubezpieczonych.xlsx) wyślemy w osobnej wiadomości — wypełnij go i odeślij. Składka się nie zmieni.</p>`
+		: `<p style="background:#FFF6E6;padding:12px 16px;font-size:14px"><b>Do wystawienia polisy potrzebujemy jeszcze struktury wiekowej zespołu.</b> W załączniku jest arkusz <b>lista-ubezpieczonych.xlsx</b> — wypełnij go i odeślij odpowiedzią na tę wiadomość. Składka się nie zmieni.</p>`
 }
 <p style="font-size:14px">Ostateczna składka za rozszerzenia wyjdzie po zebraniu deklaracji od pracowników —
 każdy sam wskaże, które rozszerzenia bierze.</p>
@@ -86,7 +88,13 @@ export async function wyslijMaile(
 	const opiekun = mailDoOpiekuna(d);
 
 	const wyniki = await Promise.allSettled([
-		resend.emails.send({ from: env.MAIL_OD, to: d.email, ...klient }),
+		resend.emails.send({
+			from: env.MAIL_OD,
+			to: d.email,
+			replyTo: env.MAIL_OPIEKUN,
+			...klient,
+			...(d.zalacznik ? { attachments: [d.zalacznik] } : {})
+		}),
 		resend.emails.send({ from: env.MAIL_OD, to: env.MAIL_OPIEKUN, replyTo: d.email, ...opiekun })
 	]);
 	wyniki.forEach((w, i) => {

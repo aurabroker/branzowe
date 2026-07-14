@@ -8,6 +8,7 @@ declare global {
 				MAIL_OD: string;
 				MAIL_OPIEKUN: string;
 				GUS_API_KEY: string;
+				ASSETS: { fetch: typeof fetch };
 			};
 			caches: CacheStorage & { default: Cache };
 		}

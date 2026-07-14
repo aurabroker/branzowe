@@ -38,7 +38,7 @@
 <div class="note">
 	<b>Nie ma Twojej branży?</b> Oferta branżowa obejmuje wybrane kody PKD. Dla pozostałych firm
 	przygotujemy ofertę standardową —
-	<a href="mailto:biuro@utratadochodu.com">zostaw kontakt</a>.
+	<a href="mailto:zgloszenie@auraexpert.pl">zostaw kontakt</a>.
 </div>
 
 <style>
