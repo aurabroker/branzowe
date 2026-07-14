@@ -71,15 +71,16 @@ function zawieraPesel(dane: z.infer<typeof schemat>): boolean {
 }
 
 /**
- * Arkusz struktury wiekowej z assetów Workera (base64) — dołączany do maila,
- * gdy klient nie podał struktury w kreatorze. Brak arkusza nie blokuje wysyłki.
+ * Załącznik z assetów Workera (base64). Brakujący plik nie blokuje wysyłki —
+ * zwracamy undefined i mail idzie bez niego.
  */
-async function pobierzArkusz(
+async function pobierzZalacznik(
 	platform: Readonly<App.Platform> | undefined,
 	fetchSvelteKit: typeof fetch,
-	origin: string
+	origin: string,
+	sciezka: string,
+	filename: string
 ): Promise<{ filename: string; content: string } | undefined> {
-	const sciezka = '/dokumenty/lista-ubezpieczonych.xlsx';
 	try {
 		const zapytanie = new Request(origin + sciezka);
 		const odp = platform?.env?.ASSETS
@@ -87,14 +88,30 @@ async function pobierzArkusz(
 			: await fetchSvelteKit(sciezka);
 		if (!odp.ok) return undefined;
 		const { Buffer } = await import('node:buffer');
-		return {
-			filename: 'lista-ubezpieczonych.xlsx',
-			content: Buffer.from(await odp.arrayBuffer()).toString('base64')
-		};
+		return { filename, content: Buffer.from(await odp.arrayBuffer()).toString('base64') };
 	} catch (e) {
-		console.error('pobierzArkusz:', e);
+		console.error('pobierzZalacznik', sciezka, e);
 		return undefined;
 	}
+}
+
+/** Komplet załączników maila klienta: RODO + informacja o dystrybutorze (zawsze), arkusz (gdy brak struktury). */
+async function zalacznikiMaila(
+	platform: Readonly<App.Platform> | undefined,
+	fetchSvelteKit: typeof fetch,
+	origin: string,
+	zArkuszem: boolean
+): Promise<{ filename: string; content: string }[]> {
+	const pobierz = (sciezka: string, nazwa: string) =>
+		pobierzZalacznik(platform, fetchSvelteKit, origin, sciezka, nazwa);
+	const zebrane = await Promise.all([
+		pobierz('/dokumenty/rodo.pdf', 'RODO.pdf'),
+		pobierz('/dokumenty/informacja-o-dystrybutorze.pdf', 'Informacja-o-dystrybutorze.pdf'),
+		zArkuszem
+			? pobierz('/dokumenty/lista-ubezpieczonych.xlsx', 'lista-ubezpieczonych.xlsx')
+			: Promise.resolve(undefined)
+	]);
+	return zebrane.filter((z): z is { filename: string; content: string } => !!z);
 }
 
 export const POST: RequestHandler = async ({ request, platform, fetch, url }) => {
@@ -175,7 +192,7 @@ export const POST: RequestHandler = async ({ request, platform, fetch, url }) =>
 	}
 
 	// maile: błąd nie wycofuje wniosku — logujemy do zdarzenia i jedziemy dalej
-	const zalacznik = dane.struktura ? undefined : await pobierzArkusz(platform, fetch, url.origin);
+	const zalaczniki = await zalacznikiMaila(platform, fetch, url.origin, !dane.struktura);
 	const bledyMaili = await wyslijMaile(env, {
 		nrWniosku: wpis.nr_wniosku,
 		branzaNazwa: db.branze.find((b) => b.slug === dane.branza)!.nazwa,
@@ -189,7 +206,7 @@ export const POST: RequestHandler = async ({ request, platform, fetch, url }) =>
 		telefon: dane.kontakt.telefon,
 		wyliczenie: w,
 		adopcja: dane.zalozona_adopcja,
-		zalacznik
+		zalaczniki
 	}).catch((e) => [{ adresat: '-', blad: String(e) }]);
 
 	const zdarzenia = [

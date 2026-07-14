@@ -15,8 +15,8 @@ export interface DaneMaila {
 	telefon: string;
 	wyliczenie: Wyliczenie;
 	adopcja: number;
-	/** arkusz struktury wiekowej (base64) — dołączany, gdy wniosek niekompletny */
-	zalacznik?: { filename: string; content: string };
+	/** załączniki (base64): RODO, informacja o dystrybutorze, ew. arkusz struktury */
+	zalaczniki?: { filename: string; content: string }[];
 }
 
 const stopka = `<p style="color:#8a8a8a;font-size:12px;margin-top:28px">
@@ -53,6 +53,8 @@ ${
 }
 <p style="font-size:14px">Ostateczna składka za rozszerzenia wyjdzie po zebraniu deklaracji od pracowników —
 każdy sam wskaże, które rozszerzenia bierze.</p>
+<p style="font-size:13px;color:#4a4a4a">W załącznikach przekazujemy informację o przetwarzaniu danych osobowych (RODO)
+oraz informację o dystrybutorze ubezpieczeń.</p>
 ${stopka}</div>`
 	};
 }
@@ -93,7 +95,7 @@ export async function wyslijMaile(
 			to: d.email,
 			replyTo: env.MAIL_OPIEKUN,
 			...klient,
-			...(d.zalacznik ? { attachments: [d.zalacznik] } : {})
+			...(d.zalaczniki?.length ? { attachments: d.zalaczniki } : {})
 		}),
 		resend.emails.send({ from: env.MAIL_OD, to: env.MAIL_OPIEKUN, replyTo: d.email, ...opiekun })
 	]);
