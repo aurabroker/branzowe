@@ -25,7 +25,7 @@ npm run build      # produkcyjny build (adapter Cloudflare)
 2. **Sekrety Workera** (`wrangler secret put …`): `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
    `RESEND_API_KEY`, `MAIL_OD`, `MAIL_OPIEKUN`, `GUS_API_KEY` — wzór w `.env.example`.
 3. `npx wrangler deploy`.
-4. Domena produkcyjna: **ergo.auraexpert.pl** (Workers → branzowe → Settings → Domains & Routes).
+4. Domena produkcyjna: **ergo.auraexpert.pl** (Workers → branzowe2 → Settings → Domains & Routes).
 
 Maile transakcyjne wychodzą z `zgloszenie@auraexpert.pl` (domena zweryfikowana w Resend);
 gdy wniosek nie zawiera struktury wiekowej, mail do klienta ma w załączniku arkusz
