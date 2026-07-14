@@ -1,7 +1,8 @@
 -- ERGO Życie w Biznesie — schemat początkowy.
+-- Tabele z prefiksem ezb_ (wspólny projekt Supabase z innymi aplikacjami).
 -- Dostęp wyłącznie przez service role z Workera: RLS włączone, zero polityk dla anon.
 
-create table cenniki (
+create table ezb_cenniki (
   id            bigint generated always as identity primary key,
   wersja        text not null unique,
   obowiazuje_od date not null,
@@ -10,13 +11,13 @@ create table cenniki (
   utworzono     timestamptz not null default now()
 );
 
-create sequence wnioski_nr;
+create sequence ezb_wnioski_nr;
 
-create table wnioski (
+create table ezb_wnioski (
   id               uuid primary key default gen_random_uuid(),
   nr_wniosku       text not null unique
-                   default ('EZB-' || to_char(now(), 'YYYY') || '-' || lpad(nextval('wnioski_nr')::text, 6, '0')),
-  cennik_wersja    text not null references cenniki(wersja),
+                   default ('EZB-' || to_char(now(), 'YYYY') || '-' || lpad(nextval('ezb_wnioski_nr')::text, 6, '0')),
+  cennik_wersja    text not null references ezb_cenniki(wersja),
   branza           text not null,
   wariant          smallint not null check (wariant between 1 and 3),
   rozszerzenia     jsonb not null default '{}',
@@ -34,9 +35,9 @@ create table wnioski (
   utworzono        timestamptz not null default now()
 );
 
-create index wnioski_status_idx on wnioski (status, utworzono desc);
+create index ezb_wnioski_status_idx on ezb_wnioski (status, utworzono desc);
 
-create table zdarzenia (
+create table ezb_zdarzenia (
   id        bigint generated always as identity primary key,
   sesja     uuid not null,
   typ       text not null,
@@ -44,9 +45,9 @@ create table zdarzenia (
   utworzono timestamptz not null default now()
 );
 
-create index zdarzenia_typ_idx on zdarzenia (typ, utworzono desc);
+create index ezb_zdarzenia_typ_idx on ezb_zdarzenia (typ, utworzono desc);
 
-alter table cenniki   enable row level security;
-alter table wnioski   enable row level security;
-alter table zdarzenia enable row level security;
+alter table ezb_cenniki   enable row level security;
+alter table ezb_wnioski   enable row level security;
+alter table ezb_zdarzenia enable row level security;
 -- celowo brak polityk: dostęp ma tylko service role (omija RLS)

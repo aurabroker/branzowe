@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request, platform, fetch, url }) =>
 
 	const supabase = supabaseAdmin(env);
 	const { data: wpis, error: bladBazy } = await supabase
-		.from('wnioski')
+		.from('ezb_wnioski')
 		.insert({
 			cennik_wersja: CENNIK_WERSJA,
 			branza: dane.branza,
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request, platform, fetch, url }) =>
 		{ typ: 'wyslano', dane: { wniosek: wpis.id, branza: dane.branza } },
 		...bledyMaili.map((b) => ({ typ: 'mail_blad', dane: { wniosek: wpis.id, ...b } }))
 	];
-	await supabase.from('zdarzenia').insert(zdarzenia.map((z) => ({ ...z, sesja: wpis.id })));
+	await supabase.from('ezb_zdarzenia').insert(zdarzenia.map((z) => ({ ...z, sesja: wpis.id })));
 
 	return json({ nr_wniosku: wpis.nr_wniosku }, { status: 201 });
 };

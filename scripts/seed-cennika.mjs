@@ -24,7 +24,7 @@ const wiersz = {
 	dane
 };
 
-const odp = await fetch(`${url}/rest/v1/cenniki?on_conflict=wersja`, {
+const odp = await fetch(`${url}/rest/v1/ezb_cenniki?on_conflict=wersja`, {
 	method: 'POST',
 	headers: {
 		apikey: klucz,
