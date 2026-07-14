@@ -28,8 +28,9 @@
 		<div class="kol">
 			<b>Aura Expert sp. z o.o.</b>
 			<p>
-				Dystrybutor ubezpieczeń. Kontakt:
-				<a href="mailto:zgloszenie@auraexpert.pl">zgloszenie@auraexpert.pl</a>
+				ul. Bolkowska 2A lok. 28, Warszawa · KRS 0000599840 · REGON 363673048<br />
+				Rejestr Pośredników Ubezpieczeniowych: 11229690/A<br />
+				Kontakt: <a href="mailto:zgloszenie@auraexpert.pl">zgloszenie@auraexpert.pl</a>
 			</p>
 		</div>
 		<nav class="kol linki">

@@ -15,16 +15,22 @@
 		informacje o naszej roli jako dystrybutora, w tym o charakterze wynagrodzenia, znajdziesz w
 		dokumencie „Informacja o dystrybutorze", który dołączamy do każdego potwierdzenia wniosku.
 	</p>
+	<h2>Dane rejestrowe</h2>
+	<p>
+		Aura Expert spółka z ograniczoną odpowiedzialnością z siedzibą w Warszawie przy ul. Bolkowskiej
+		2A lokal 28, wpisana do Krajowego Rejestru Sądowego pod numerem <b>0000599840</b> przez Sąd
+		Rejonowy dla m.st. Warszawy, XII Wydział Gospodarczy Krajowego Rejestru Sądowego, REGON
+		<b>363673048</b>, kapitał zakładowy 5.000 zł.
+	</p>
+	<p>
+		Spółka wpisana jest do Rejestru Pośredników Ubezpieczeniowych pod numerem
+		<b>11229690/A</b>. Wpis można zweryfikować w rejestrze prowadzonym przez Komisję Nadzoru
+		Finansowego: <a href="https://rpu.knf.gov.pl" rel="noopener">rpu.knf.gov.pl</a>.
+	</p>
 	<h2>Kontakt</h2>
 	<p>
 		E-mail: <a href="mailto:zgloszenie@auraexpert.pl">zgloszenie@auraexpert.pl</a>
 	</p>
-	<!-- TODO: uzupełnić dane rejestrowe spółki (KRS, NIP, REGON, adres siedziby, kapitał zakładowy)
-	     oraz numer wpisu do rejestru agentów KNF -->
-	<div class="note">
-		Dane rejestrowe spółki (KRS, NIP, adres siedziby) oraz numer wpisu do rejestru agentów
-		ubezpieczeniowych KNF zostaną uzupełnione przed startem kampanii.
-	</div>
 </main>
 
 <style>
