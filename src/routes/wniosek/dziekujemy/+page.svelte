@@ -1,9 +1,17 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import { losowePromo } from '$lib/promo';
 
 	const nr = $derived(page.url.searchParams.get('nr') ?? '');
 	const email = $derived(page.url.searchParams.get('email') ?? 'twój adres e-mail');
 	const kompletny = $derived(page.url.searchParams.get('kompletny') === '1');
+
+	// losowanie w onMount (nie podczas SSR), by przy każdej wizycie zdjęcie było inne
+	let promo = $state<string | null>(null);
+	onMount(() => {
+		promo = losowePromo();
+	});
 </script>
 
 <svelte:head>
@@ -39,6 +47,16 @@
 					</small>
 				</div>
 			</div>
+		{/if}
+
+		<p class="dok-link">
+			<a href="/dokumenty">Przejdź do zakładki Dokumenty</a> jeśli chcesz pobrać OWU.
+		</p>
+
+		{#if promo}
+			<a class="promo" href="https://utratadochodu.pl" target="_blank" rel="noopener">
+				<img src={promo} alt="" />
+			</a>
 		{/if}
 
 		<div style="margin-top:32px"><a class="btn ghost" href="/wniosek">Zacznij od nowa</a></div>
@@ -111,5 +129,24 @@
 	.komplet strong {
 		display: block;
 		font-size: 14px;
+	}
+	.dok-link {
+		margin-top: 28px;
+		font-size: 14px;
+		color: var(--gray);
+	}
+	.dok-link a {
+		color: var(--red);
+		font-weight: 600;
+	}
+	.promo {
+		display: block;
+		max-width: 560px;
+		margin: 28px auto 0;
+	}
+	.promo img {
+		display: block;
+		width: 100%;
+		height: auto;
 	}
 </style>

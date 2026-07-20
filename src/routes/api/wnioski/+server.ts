@@ -206,6 +206,7 @@ export const POST: RequestHandler = async ({ request, platform, fetch, url }) =>
 		telefon: dane.kontakt.telefon,
 		wyliczenie: w,
 		adopcja: dane.zalozona_adopcja,
+		bazaUrl: url.origin,
 		zalaczniki
 	}).catch((e) => [{ adresat: '-', blad: String(e) }]);
 

@@ -15,6 +15,8 @@ export interface DaneMaila {
 	telefon: string;
 	wyliczenie: Wyliczenie;
 	adopcja: number;
+	/** bazowy origin serwisu (np. https://ergo.auraexpert.pl) — do linków w mailu */
+	bazaUrl: string;
 	/** załączniki (base64): RODO, informacja o dystrybutorze, ew. arkusz struktury */
 	zalaczniki?: { filename: string; content: string }[];
 }
@@ -36,6 +38,18 @@ function wierszeSkladki(d: DaneMaila): string {
 	return h;
 }
 
+/** Sekcja z linkami do Kart Produktu (PDF) oraz do zakładki Dokumenty z OWU. */
+function dokumentyProduktowe(baza: string): string {
+	const b = baza.replace(/\/$/, '');
+	return `<p style="font-size:14px;margin-top:20px"><b>Dokumenty produktowe</b></p>
+<p style="font-size:14px;line-height:1.7">Karty Produktu (PDF):
+<a href="${b}/dokumenty/karta-produktu-ergo-zycie-w-biznesie.pdf" style="color:#C11F31">ERGO Życie w Biznesie</a> ·
+<a href="${b}/dokumenty/karta-produktu-medi-opieka.pdf" style="color:#C11F31">Medi Opieka</a> ·
+<a href="${b}/dokumenty/karta-produktu-global-doctors.pdf" style="color:#C11F31">Global Doctors</a>.<br>
+Pełne Ogólne Warunki Ubezpieczenia (OWU) znajdziesz w zakładce
+<a href="${b}/dokumenty" style="color:#C11F31">Dokumenty</a>.</p>`;
+}
+
 export function mailDoKlienta(d: DaneMaila): { subject: string; html: string } {
 	return {
 		subject: `Wniosek ${d.nrWniosku} przyjęty — ERGO Życie w Biznesie`,
@@ -53,6 +67,7 @@ ${
 }
 <p style="font-size:14px">Ostateczna składka za rozszerzenia wyjdzie po zebraniu deklaracji od pracowników —
 każdy sam wskaże, które rozszerzenia bierze.</p>
+${dokumentyProduktowe(d.bazaUrl)}
 <p style="font-size:13px;color:#4a4a4a">W załącznikach przekazujemy informację o przetwarzaniu danych osobowych (RODO)
 oraz informację o dystrybutorze ubezpieczeń.</p>
 ${stopka}</div>`

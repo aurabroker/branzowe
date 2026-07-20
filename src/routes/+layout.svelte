@@ -34,6 +34,7 @@
 			</p>
 		</div>
 		<nav class="kol linki">
+			<a href="/dokumenty">Dokumenty</a>
 			<a href="/o-nas">O nas</a>
 			<a href="/regulamin">Regulamin</a>
 			<a href="/rodo">RODO</a>

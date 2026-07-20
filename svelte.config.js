@@ -5,7 +5,18 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		prerender: {
+			// Pliki OWU (PDF ERGO Hestii) dogrywane są ręcznie do static/dokumenty/.
+			// Dopóki ich brak, link 404 nie przerywa builda; każdy INNY martwy link nadal jest błędem.
+			handleHttpError: ({ path, message }) => {
+				if (/^\/dokumenty\/owu-[a-z-]+\.pdf$/.test(path)) {
+					console.warn(`prerender: brak pliku OWU (do dogrania): ${path}`);
+					return;
+				}
+				throw new Error(message);
+			}
+		}
 	}
 };
 

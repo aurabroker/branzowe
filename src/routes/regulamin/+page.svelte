@@ -39,9 +39,6 @@
 		<a href="mailto:zgloszenie@auraexpert.pl">zgloszenie@auraexpert.pl</a>. Odpowiadamy w terminie
 		14 dni.
 	</p>
-
-	<!-- TODO: regulamin do zatwierdzenia przez prawnika przed startem kampanii -->
-	<div class="note">Dokument roboczy — wymaga zatwierdzenia przez prawnika przed startem kampanii.</div>
 </main>
 
 <style>
