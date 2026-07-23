@@ -1,0 +1,483 @@
+{
+ "_meta": {
+  "zrodlo": "Ulotki marketingowe EŻwB + ulotki pakietów dodatkowych + Global Doctors + MediPlan + Assistance medyczny",
+  "OSTRZEZENIE": "Materiały marketingowe NIE są ofertą w rozumieniu art. 66 k.c. Wiążące są wyłącznie OWU: EZwB 01/25, MA 01/25, GD-GZ 01/25. Pola ze statusem 'BRAK_DANYCH' wymagają wypełnienia z OWU — nie wolno ich uzupełniać domysłem.",
+  "liczby_deklarowane_w_ulotkach": {
+   "swiadczen_lacznie": 124,
+   "jednostek_poważnych_zachorowan": 102,
+   "poważnych_zachorowan_pakiet_zdrowie": 87,
+   "metod_leczenia_specjalistycznego": 20,
+   "podgrup_operacji_pakiet_glowny": 5,
+   "produktow_assistance_mediopieka": 13
+  }
+ },
+ "warunki_programu": {
+  "naglowek": "Program dla firm zatrudniających od 2 do 100 osób",
+  "punkty": [
+   "Zatrudnienie: od 2 do 100 osób — poniżej i powyżej tego progu program nie działa.",
+   "Wiek pracownika: od 15 do 70 lat (aktywni zawodowo).",
+   "Bliscy objęci ochroną: małżonek albo partner, pełnoletnie dziecko.",
+   "Oferta przeznaczona dla nowych klientów Sopockiego TU na Życie ERGO Hestia S.A.",
+   "Ochrona 24 h/dobę na całym świecie; świadczenia MediOpieka realizowane wyłącznie w Polsce.",
+   "Składki branżowe obowiązują dla umów zawartych od 1.07.2026 do 31.12.2026."
+  ]
+ },
+ "pakiety": [
+  {
+   "slug": "zycie",
+   "nazwa": "Pakiet Życie",
+   "jedno_zdanie": "Wypłata dla bliskich, jeśli ubezpieczonego zabraknie.",
+   "dla_kogo": "Dla tych, którzy chcą zabezpieczyć finansowo swoich bliskich na wypadek śmierci.",
+   "polecamy_osobom": [
+    "posiadającym zobowiązania finansowe",
+    "wychowującym dzieci",
+    "będącym głównymi żywicielami rodziny",
+    "wykonującym zawód o podwyższonym ryzyku wypadków"
+   ],
+   "korzysci": [
+    "Świadczenie finansowe, które może zapewnić stabilność materialną i pokryć bieżące wydatki — spłatę kredytu czy codzienne potrzeby rodziny.",
+    "Środki na przyszłość: edukacja dzieci lub realizacja innych ważnych celów życiowych.",
+    "Wsparcie w trudnych chwilach, które minimalizuje stres związany z niespodziewanymi wydatkami."
+   ],
+   "warianty_skladka": [
+    12,
+    15,
+    20
+   ],
+   "uwaga_kumulacja": "Kwoty w osobnych wierszach nie kumulują się — wartość przy zgonie w wyniku wypadku zawiera już kwotę za zgon."
+  },
+  {
+   "slug": "zdrowie",
+   "nazwa": "Pakiet Zdrowie",
+   "jedno_zdanie": "Pieniądze i wsparcie medyczne, gdy pojawia się poważna choroba.",
+   "dla_kogo": "Dla osób, które chcą zapewnić sobie bezpieczeństwo finansowe i wsparcie w powrocie do zdrowia w przypadku choroby.",
+   "polecamy_osobom": [
+    "które obawiają się, że pogorszenie stanu zdrowia obciąży rodzinny budżet",
+    "które w czasie choroby chcą skupić się na walce z nią, a nie myśleć o kosztach leczenia"
+   ],
+   "korzysci": [
+    "Świadczenie finansowe, które można przeznaczyć na pokrycie kosztów leczenia, rehabilitacji lub inne potrzeby związane z powrotem do zdrowia.",
+    "Szeroki zakres ochrony obejmujący 87 poważnych zachorowań i szeroki katalog operacji chirurgicznych.",
+    "Wsparcie przy leczeniu specjalistycznym w razie konieczności zastosowania jednej z 20 metod.",
+    "Świadczenie szpitalne już od pierwszego dnia pobytu w szpitalu.",
+    "Assistance chorobowy: organizacja i pokrycie kosztów konsultacji lekarskich, diagnostyki laboratoryjnej, badań specjalistycznych oraz wsparcia psychologicznego."
+   ],
+   "warianty_skladka_5podgrup": [
+    17,
+    27,
+    39
+   ],
+   "warianty_skladka_3podgrupy": [
+    18,
+    28,
+    40
+   ],
+   "uwaga_podgrupy": "Pakiet główny rozlicza operacje w 5 podgrupach — spójny jest wariant 5-podgrupowy."
+  },
+  {
+   "slug": "wypadek",
+   "nazwa": "Pakiet Wypadek",
+   "jedno_zdanie": "Wsparcie finansowe po nieszczęśliwym wypadku, aż do powrotu do sprawności.",
+   "dla_kogo": "Dla osób, które chcą zadbać o swoje bezpieczeństwo i zabezpieczyć się na wypadek nieprzewidzianych zdarzeń.",
+   "polecamy_osobom": [
+    "prowadzącym aktywny tryb życia",
+    "które nie chcą, aby kontuzja pokrzyżowała ich plany",
+    "które chcą mieć zapewnione wsparcie w powrocie do pełnej sprawności po nieszczęśliwym wypadku"
+   ],
+   "korzysci": [
+    "Dodatkowe świadczenie w przypadku trwałego uszczerbku spowodowanego wypadkiem komunikacyjnym.",
+    "Wsparcie finansowe za każdy dzień pobytu w szpitalu spowodowany nieszczęśliwym wypadkiem.",
+    "Szeroki katalog operacji oraz ochrona przy ewentualnych powikłaniach po zabiegu.",
+    "Dodatkowe wsparcie finansowe, które pomoże zabezpieczyć budżet domowy w trudnym okresie."
+   ],
+   "warianty_skladka_5podgrup": [
+    11,
+    15,
+    19
+   ],
+   "warianty_skladka_3podgrupy": [
+    12,
+    16,
+    20
+   ]
+  },
+  {
+   "slug": "onkologiczny",
+   "nazwa": "Pakiet Onkologiczny",
+   "jedno_zdanie": "Wypłata przy diagnozie nowotworu plus assistance onkologiczny w trakcie leczenia.",
+   "dla_kogo": "Dla osób, które chcą zabezpieczyć się na wypadek diagnozy choroby nowotworowej.",
+   "korzysci": [
+    "Świadczenie pieniężne za poważne zachorowanie oraz za leczenie szpitalne już od pierwszego dnia hospitalizacji.",
+    "Dodatkowe świadczenie za jedną z procedur leczenia specjalistycznego.",
+    "Konsultacje lekarskie, konsultacje onkologiczno-genetyczne oraz wsparcie psychoonkologiczne.",
+    "Pokrycie kosztów badań laboratoryjnych, badań specjalistycznych oraz testu genetycznego określającego zwiększone ryzyko zachorowania na raka określonych narządów."
+   ],
+   "procedury_leczenia_specjalistycznego_wymienione_w_ulotce": [
+    "celowana terapia nowotworowa",
+    "chemioterapia",
+    "hormonoterapia",
+    "immunoterapia",
+    "radioterapia"
+   ],
+   "warianty_skladka": [
+    12,
+    16,
+    22
+   ]
+  },
+  {
+   "slug": "kardiologiczny",
+   "nazwa": "Pakiet Kardiologiczny",
+   "jedno_zdanie": "Ochrona przy chorobach sercowo-naczyniowych, z teleopieką kardiologiczną.",
+   "dla_kogo": "Dla osób, które poszukują kompleksowej ochrony na wypadek chorób sercowo-naczyniowych.",
+   "korzysci": [
+    "Wsparcie finansowe w przypadku poważnego zachorowania, hospitalizacji lub trwałego uszczerbku na zdrowiu.",
+    "Ochrona finansowa dla bliskich w przypadku śmierci ubezpieczonego.",
+    "Szybki dostęp do teleopieki kardiologicznej, w tym pokrycie kosztów korzystania z zestawu teleopieki.",
+    "Dodatkowe świadczenie za wykonanie jednej z procedur leczenia specjalistycznego."
+   ],
+   "procedury_leczenia_specjalistycznego_wymienione_w_ulotce": [
+    "ablacja serca",
+    "embolizacja tętniaka tętnic mózgowych",
+    "wszczepienie kardiowertera / defibrylatora",
+    "wszczepienie rozrusznika serca"
+   ],
+   "warianty_skladka": [
+    10,
+    14,
+    18
+   ]
+  },
+  {
+   "slug": "dziecko-nw",
+   "nazwa": "Pakiet Dziecko NW",
+   "jedno_zdanie": "Wszystkie dzieci ubezpieczonego do 25 lat — w ramach jednej składki.",
+   "dla_kogo": "Dla rodziców, którzy chcą kompleksowo zadbać o bezpieczeństwo swoich dzieci.",
+   "sprawdzi_sie_gdy_dzieci": [
+    "są aktywne",
+    "biorą udział w zajęciach pozaszkolnych, wyjazdach, obozach",
+    "dojeżdżają do szkoły rowerem lub autobusem"
+   ],
+   "korzysci": [
+    "Ochrona obejmuje wszystkie dzieci ubezpieczonego w wieku do 25 lat w ramach jednej składki.",
+    "Świadczenie finansowe za leczenie szpitalne, trwały uszczerbek na zdrowiu lub zgon dziecka w wyniku nieszczęśliwego wypadku.",
+    "Szeroki katalog operacji chirurgicznych.",
+    "Wsparcie finansowe może zostać przeznaczone na rehabilitację, prywatną opiekę medyczną lub korepetycje."
+   ],
+   "warianty_skladka_5podgrup": [
+    5,
+    7,
+    11
+   ],
+   "warianty_skladka_3podgrupy": [
+    6,
+    8,
+    12
+   ]
+  },
+  {
+   "slug": "malzonek-nw",
+   "nazwa": "Pakiet Małżonek NW",
+   "jedno_zdanie": "Ochrona małżonka albo partnera na wypadek nieszczęśliwego wypadku.",
+   "dla_kogo": "Dla osób, które chcą zapewnić swoim najbliższym bezpieczeństwo i ochronę zdrowia.",
+   "korzysci": [
+    "Świadczenie finansowe w razie nieszczęśliwego wypadku małżonka albo partnera.",
+    "Wypłata świadczenia za pobyt w szpitalu już od pierwszego dnia, do nawet 90 dni hospitalizacji.",
+    "Świadczenie za trwały uszczerbek na zdrowiu spowodowany nieszczęśliwym wypadkiem lub wypadkiem komunikacyjnym.",
+    "Szeroki katalog operacji, a także ochrona w przypadku ewentualnych powikłań po zabiegach."
+   ],
+   "warianty_skladka_5podgrup": [
+    5,
+    7,
+    11
+   ],
+   "warianty_skladka_3podgrupy": [
+    6,
+    8,
+    12
+   ]
+  },
+  {
+   "slug": "mediplan",
+   "nazwa": "MediPlan",
+   "jedno_zdanie": "Organizacja i pokrycie kosztów świadczeń medycznych po nieszczęśliwym wypadku.",
+   "dla_kogo": "Pracodawca wybiera jeden z trzech wariantów dla całej grupy.",
+   "zasady": [
+    "Przy jednym nieszczęśliwym wypadku można skorzystać kilkukrotnie z tego samego świadczenia — do wyczerpania limitu.",
+    "Przy jednym nieszczęśliwym wypadku ze świadczeń rehabilitacji, tomografii komputerowej i rezonansu magnetycznego można skorzystać tylko raz.",
+    "W ramach jednego świadczenia rehabilitacji można wykonać kilka zabiegów — do wyczerpania limitu liczby zabiegów.",
+    "W ramach jednego świadczenia badań laboratoryjnych można wykonać wszystkie badania zlecone na jednym skierowaniu."
+   ],
+   "warianty": [
+    {
+     "nazwa": "podstawowy",
+     "swiadczen_rocznie": 10,
+     "rehabilitacja": "—",
+     "usg": false,
+     "tk": false,
+     "mr": false
+    },
+    {
+     "nazwa": "rozszerzony",
+     "swiadczen_rocznie": 15,
+     "rehabilitacja": "1 świadczenie, maks. 20 zabiegów",
+     "usg": true,
+     "tk": false,
+     "mr": false
+    },
+    {
+     "nazwa": "maksymalny",
+     "swiadczen_rocznie": 20,
+     "rehabilitacja": "1 świadczenie, maks. 40 zabiegów",
+     "usg": true,
+     "tk": true,
+     "mr": true
+    }
+   ],
+   "konsultacje": [
+    "chirurg",
+    "okulista",
+    "otolaryngolog",
+    "ortopeda",
+    "kardiolog",
+    "neurolog",
+    "pulmonolog",
+    "lekarz rehabilitacji",
+    "neurochirurg",
+    "psycholog"
+   ],
+   "badania": [
+    "zabiegi ambulatoryjne",
+    "badania laboratoryjne",
+    "badania radiologiczne",
+    "badania ultrasonograficzne (od wariantu rozszerzonego)"
+   ],
+   "swiadczenia_informacyjne": "Telefoniczna informacja medyczna i infolinia szpitalna — bez limitu we wszystkich wariantach.",
+   "LUKA": "Cennik branżowy podaje jedną składkę 2,80 zł. Który wariant MediPlanu ona obejmuje? BRAK_DANYCH."
+  },
+  {
+   "slug": "assistance-medyczny",
+   "nazwa": "Assistance medyczny",
+   "jedno_zdanie": "Pomoc w domu i transport medyczny przy nagłym zachorowaniu, wypadku lub narodzinach dziecka.",
+   "kogo_obejmuje": [
+    "ubezpieczony",
+    "małżonek albo partner",
+    "dziecko",
+    "rodzic ubezpieczonego",
+    "rodzic małżonka albo partnera"
+   ],
+   "limit_glowny": "10 000 zł na rok polisowy — łącznie na wszystkie usługi assistance medycznego.",
+   "zasada_limitu": "Do każdego świadczenia przypisana jest kwota, którą można wykorzystać w roku polisowym. Kwota określana jest odrębnie dla ubezpieczonego i dla każdej osoby, której realizowana jest usługa. Wykorzystana kwota zmniejsza wartość limitu 10 000 zł.",
+   "kiedy_przysluguje": "Nagłe zachorowanie, nieszczęśliwy wypadek albo zdarzenie dotyczące urodzenia dziecka."
+  },
+  {
+   "slug": "global-doctors",
+   "nazwa": "Global Doctors",
+   "jedno_zdanie": "Leczenie w renomowanych klinikach za granicą, suma 2 mln € na całe życie.",
+   "kto_moze_skorzystac": "Pracownicy i ich bliscy w wieku od 18 do 64 lat, mieszkający na stałe w Polsce, którzy w okresie 12 miesięcy poprzedzających objęcie ochroną przebywali w kraju łącznie co najmniej pół roku (183 dni).",
+   "moduly_ochrony": [
+    "nowotwór złośliwy (m.in. białaczka, chłoniak, mięsak, rak płuc, rak trzustki, czerniak)",
+    "nowotwór złośliwy w stadium przedinwazyjnym / nowotwór in situ / ciężka dysplazja przednowotworowa",
+    "wymiana lub naprawa zastawek serca",
+    "operacja pomostowania tętnic wieńcowych",
+    "operacja neurochirurgiczna",
+    "przeszczepienie narządu od żyjącego dawcy lub przeszczepienie szpiku kostnego"
+   ],
+   "swiadczenia": [
+    "druga opinia medyczna — raport ekspercki na temat poważnego stanu chorobowego",
+    "organizacja opieki medycznej za granicą z pokryciem kosztów medycznych, podróży, zakwaterowania i repatriacji zwłok",
+    "kontrola stanu zdrowia po leczeniu za granicą (w 36-miesięcznym okresie świadczeniowym)",
+    "pokrycie kosztów leków po leczeniu za granicą",
+    "dzienne świadczenie szpitalne",
+    "wsparcie psychologiczne — 4 wideokonsultacje na moduł ochrony",
+    "medycyna precyzyjna przy szczególnej postaci nowotworu złośliwego"
+   ],
+   "medycyna_precyzyjna": [
+    "profilowanie molekularne — badanie bioprób w celu scharakteryzowania cech komórek nowotworowych; wykonywane raz dla każdej szczególnej postaci nowotworu złośliwego (wg kodu ICD)",
+    "testy rodzinne — testy mutacji dziedzicznych (germinalnych) dla biologicznego rodzeństwa i biologicznych dzieci ubezpieczonego, za ich zgodą",
+    "przewodnik pacjenta w ramach badań klinicznych — wyszukiwanie badań maks. 2 razy dla każdej szczególnej postaci nowotworu"
+   ],
+   "warunki_medycyny_precyzyjnej": [
+    "nowotwór złośliwy nieodpowiadający na leczenie pierwszego rzutu zastosowane przez onkologa",
+    "nowotwór złośliwy w III lub IV stadium zaawansowania"
+   ],
+   "skladka": 135
+  }
+ ],
+ "ograniczenia": {
+  "STATUS": "KOMPLETNE",
+  "zrodlo": "EZB_OWU.pdf, rozdziały 10–101",
+  "wylaczen": 306,
+  "karencji": 150
+ },
+ "katalog_powaznych_zachorowan": {
+  "STATUS": "KOMPLETNY",
+  "liczba": 104,
+  "zrodlo": "EZB_OWU.pdf, Załącznik 1, sparsowane z tabeli (pdfplumber)"
+ },
+ "katalog_operacji": {
+  "STATUS": "KOMPLETNY",
+  "zrodlo": "EZwB 01/25, Załącznik 3 (3 podgrupy, PDF 319–329) i Załącznik 4 (5 podgrup, PDF 331–343)",
+  "liczba": 602
+ },
+ "leczenie_specjalistyczne": {
+  "STATUS": "CZĘŚCIOWE",
+  "deklarowana_liczba_metod": 20,
+  "potwierdzone_z_ulotek": [
+   {
+    "metoda": "celowana terapia nowotworowa",
+    "obszar": "onkologia"
+   },
+   {
+    "metoda": "chemioterapia",
+    "obszar": "onkologia"
+   },
+   {
+    "metoda": "hormonoterapia",
+    "obszar": "onkologia"
+   },
+   {
+    "metoda": "immunoterapia",
+    "obszar": "onkologia"
+   },
+   {
+    "metoda": "radioterapia",
+    "obszar": "onkologia"
+   },
+   {
+    "metoda": "ablacja serca",
+    "obszar": "kardiologia"
+   },
+   {
+    "metoda": "embolizacja tętniaka tętnic mózgowych",
+    "obszar": "kardiologia"
+   },
+   {
+    "metoda": "wszczepienie kardiowertera / defibrylatora",
+    "obszar": "kardiologia"
+   },
+   {
+    "metoda": "wszczepienie rozrusznika serca",
+    "obszar": "kardiologia"
+   }
+  ],
+  "brakuje": "11 z 20 deklarowanych metod",
+  "uwaga": "Świadczenie dostępne również dla małżonka albo partnera oraz dziecka."
+ },
+ "slowniczek": {
+  "STATUS": "WYJAŚNIENIA POTOCZNE — nie są definicjami prawnymi. Definicje wiążące znajdują się w OWU i muszą je zastąpić przed publikacją.",
+  "hasla": [
+   {
+    "termin": "Suma ubezpieczenia",
+    "wyjasnienie": "Kwota, którą wypłacamy w razie zdarzenia. W pakiecie głównym świadczenie z tytułu zgonu ubezpieczonego jest równe sumie ubezpieczenia — to ona zwalnia pracodawcę z odprawy pośmiertnej."
+   },
+   {
+    "termin": "Skumulowana kwota świadczeń",
+    "wyjasnienie": "Kwoty w tabeli nie dodają się do siebie. Wiersz „zgon w wyniku wypadku komunikacyjnego w pracy” zawiera już w sobie kwotę za zgon, za zgon w wyniku wypadku i za zgon w wyniku wypadku w pracy — dostajesz tę jedną, najwyższą kwotę."
+   },
+   {
+    "termin": "Karencja",
+    "wyjasnienie": "Okres liczony od początku ochrony, w którym dane świadczenie jeszcze nie przysługuje. Chroni przed przystąpieniem do ubezpieczenia dopiero wtedy, gdy zdarzenie jest już przewidywalne. Świadczenia dla samego ubezpieczonego nie mają karencji."
+   },
+   {
+    "termin": "Nieszczęśliwy wypadek (NW)",
+    "wyjasnienie": "Nagłe zdarzenie wywołane przyczyną zewnętrzną, w wyniku którego doszło do urazu. Odróżniamy je od choroby, bo świadczenia za NW są wyższe.",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Wypadek komunikacyjny",
+    "wyjasnienie": "Nieszczęśliwy wypadek z udziałem pojazdu. Świadczenia są wyższe niż za zwykły NW.",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Wypadek w pracy",
+    "wyjasnienie": "Nieszczęśliwy wypadek, który wydarzył się w związku z wykonywaną pracą. Podnosi wysokość świadczenia; kumuluje się z wypadkiem komunikacyjnym (najwyższa kwota to wypadek komunikacyjny w pracy).",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Trwały uszczerbek na zdrowiu",
+    "wyjasnienie": "Trwałe uszkodzenie ciała wyrażone w procentach. Świadczenie liczymy jako kwotę za 1% uszczerbku × orzeczony procent. Przykład: 650 zł za 1% i orzeczone 20% = 13 000 zł.",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Uraz niepowodujący trwałego uszczerbku",
+    "wyjasnienie": "Jednorazowe świadczenie za uraz, po którym nie pozostał trwały ślad — np. złamanie, które się zrosło. Dostępne w części branż."
+   },
+   {
+    "termin": "Poważne zachorowanie",
+    "wyjasnienie": "Choroba z zamkniętej listy w OWU (87 pozycji w Pakiecie Zdrowie, 102 jednostki w programie głównym). Wypłata jest jednorazowa, a jej wysokość zależy od tego, w którym zakresie znajduje się rozpoznana choroba.",
+    "definicja_wiazaca": "OWU — załącznik z katalogiem"
+   },
+   {
+    "termin": "Nowotwór in situ",
+    "wyjasnienie": "Nowotwór w stadium przedinwazyjnym — nie nacieka jeszcze sąsiednich tkanek. Ma osobne, niższe świadczenie niż nowotwór złośliwy.",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Leczenie specjalistyczne",
+    "wyjasnienie": "Świadczenie za zastosowanie jednej z 20 nowoczesnych metod leczenia (m.in. chemioterapia, radioterapia, ablacja serca, wszczepienie rozrusznika). Wypłacane niezależnie od świadczenia za poważne zachorowanie.",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Operacja chirurgiczna — podgrupy",
+    "wyjasnienie": "Katalog operacji jest podzielony na 5 grup według ciężkości. Grupa 1 to 100% kwoty świadczenia, Grupa 5 — 10%. Ile dokładnie dostaniesz, zależy od tego, do której grupy trafi Twoja operacja.",
+    "definicja_wiazaca": "OWU — katalog operacji"
+   },
+   {
+    "termin": "Powikłania pooperacyjne",
+    "wyjasnienie": "Dodatkowe świadczenie, jeśli po operacji objętej ochroną wystąpiły powikłania z listy w OWU.",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Świadczenie dzienne (szpitalne)",
+    "wyjasnienie": "Kwota za każdy dzień pobytu w szpitalu. W pakiecie głównym płatna od 1. do 180. dnia, u bliskich i w pakietach dodatkowych do 90. dnia. Na OIOM — do 14. dnia."
+   },
+   {
+    "termin": "OIOM / OIT",
+    "wyjasnienie": "Oddział intensywnej opieki medycznej / terapii. Pobyt na nim ma osobne, dodatkowe świadczenie dzienne."
+   },
+   {
+    "termin": "Koszty leczenia poszpitalnego (karta apteczna)",
+    "wyjasnienie": "Jednorazowa kwota po wyjściu ze szpitala, przeznaczona na leki i środki opatrunkowe."
+   },
+   {
+    "termin": "Całkowita trwała niezdolność do pracy",
+    "wyjasnienie": "Trwała utrata zdolności do wykonywania jakiejkolwiek pracy. Jednorazowe świadczenie, w części branż wypłacane tylko wtedy, gdy przyczyną był nieszczęśliwy wypadek, w innych — także choroba.",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Osierocenie dziecka",
+    "wyjasnienie": "Świadczenie wypłacane dziecku ubezpieczonego po jego śmierci — niezależnie od świadczenia dla uposażonych."
+   },
+   {
+    "termin": "Uposażony (beneficjent)",
+    "wyjasnienie": "Osoba wskazana przez ubezpieczonego do otrzymania świadczenia po jego śmierci. Można ją zmienić w każdej chwili."
+   },
+   {
+    "termin": "Rok polisowy",
+    "wyjasnienie": "12 miesięcy liczone od początku ochrony, a nie rok kalendarzowy. Limity roczne (np. 10 000 zł assistance medycznego) odnawiają się z jego początkiem."
+   },
+   {
+    "termin": "E-deklaracja",
+    "wyjasnienie": "Elektroniczne przystąpienie pracownika do ubezpieczenia. To w niej pracownik wskazuje, które pakiety dodatkowe wybiera i kogo wskazuje jako uposażonego."
+   },
+   {
+    "termin": "Indywidualna kontynuacja",
+    "wyjasnienie": "Możliwość zachowania ochrony na własną rękę po odejściu z firmy, bez ponownej oceny stanu zdrowia.",
+    "definicja_wiazaca": "OWU"
+   },
+   {
+    "termin": "Odprawa pośmiertna",
+    "wyjasnienie": "Świadczenie, które pracodawca musi wypłacić rodzinie zmarłego pracownika (Kodeks pracy). Finansując składkę na ubezpieczenie na życie, pracodawca jest z niej zwolniony do wysokości wypłaconego świadczenia z tytułu zgonu."
+   },
+   {
+    "termin": "Medycyna precyzyjna",
+    "wyjasnienie": "W Global Doctors: dobranie terapii na podstawie profilu molekularnego guza. Stosowana, gdy nowotwór nie odpowiada na leczenie pierwszego rzutu albo jest w III–IV stadium."
+   },
+   {
+    "termin": "Profilowanie molekularne",
+    "wyjasnienie": "Badanie próbki guza, które pokazuje jego cechy genetyczne i pozwala dobrać celowaną terapię. W Global Doctors wykonywane raz dla każdej postaci nowotworu."
+   }
+  ]
+ }
+}
