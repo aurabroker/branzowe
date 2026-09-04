@@ -25,6 +25,8 @@
 
 <svelte:head>
 	<title>Kreator wniosku — ERGO Życie w Biznesie</title>
+	<!-- krok lejka, nie strona docelowa — poza indeksem wyszukiwarek -->
+	<meta name="robots" content="noindex, follow" />
 </svelte:head>
 
 <nav class="stepper">

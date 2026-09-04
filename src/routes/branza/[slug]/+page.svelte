@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { OBRAZY } from '$lib/obrazy';
 	import { RZYMSKIE } from '$lib/domena/skladka';
+	import { BAZA_URL } from '$lib/adres';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -11,7 +12,7 @@
 <svelte:head>
 	<title>{data.seo_tytul}</title>
 	<meta name="description" content={data.seo_opis} />
-	<link rel="canonical" href="https://ergo.auraexpert.pl/branza/{data.slug}" />
+	<link rel="canonical" href="{BAZA_URL}/branza/{data.slug}" />
 	<meta property="og:title" content={data.seo_tytul} />
 	<meta property="og:description" content={data.seo_opis} />
 	<meta property="og:type" content="website" />

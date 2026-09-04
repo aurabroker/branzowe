@@ -2,6 +2,7 @@
 	import produkty from '$lib/dane/produkty.json';
 	import { OBRAZY } from '$lib/obrazy';
 	import { formatujZl } from '$lib/domena/skladka';
+	import { BAZA_URL } from '$lib/adres';
 
 	const liczbaSwiadczen = Object.keys(produkty.swiadczenia).length;
 	const najnizsza = Math.min(...produkty.branze.flatMap((b) => b.skladka));
@@ -13,6 +14,7 @@
 		name="description"
 		content="Grupowe ubezpieczenie na życie dla firm 2–100 osób. 8 programów branżowych, składka od {najnizsza} zł. Sprawdź warunki dla swojej branży i złóż wniosek online."
 	/>
+	<link rel="canonical" href={BAZA_URL} />
 </svelte:head>
 
 <div class="hero">

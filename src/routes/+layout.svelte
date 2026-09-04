@@ -1,8 +1,15 @@
 <script lang="ts">
 	import '../app.css';
 	import { page } from '$app/state';
+	import { zapamietajZrodlo } from '$lib/zrodlo';
 
 	let { children } = $props();
+
+	// Atrybucja kampanii: pierwsze wejście w sesji wygrywa. Działa po hydracji,
+	// więc prerenderowane strony pozostają statyczne w HTML.
+	$effect(() => {
+		zapamietajZrodlo(page.url, document.referrer);
+	});
 </script>
 
 <header class="top">

@@ -3,6 +3,7 @@
 	import { stan } from './stan.svelte';
 	import { formatujZl, RZYMSKIE } from '$lib/domena/skladka';
 	import { ZGODY, KODY_WYMAGANE } from '$lib/domena/zgody';
+	import { odczytajZrodlo } from '$lib/zrodlo';
 
 	let otwarte = $state<Record<string, boolean>>({});
 
@@ -28,7 +29,8 @@
 					zgody: Object.fromEntries(
 						ZGODY.filter((z) => stan.zgody[z.kod]).map((z) => [z.kod, { wersja: z.wersja }])
 					),
-					skladka_klienta: { min: w.min, max: w.max, szacunek: w.szacunek }
+					skladka_klienta: { min: w.min, max: w.max, szacunek: w.szacunek },
+					zrodlo_wizyty: odczytajZrodlo()
 				})
 			});
 			if (!odp.ok) {

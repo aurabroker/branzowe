@@ -6,6 +6,7 @@ import type { Produkty, WariantIdx } from '$lib/domena/typy';
 import { wyliczSkladke } from '$lib/domena/skladka';
 import { nipPoprawny } from '$lib/domena/nip';
 import { KODY_WYMAGANE } from '$lib/domena/zgody';
+import { zawieraPesel } from '$lib/domena/rodo';
 import { supabaseAdmin } from '$lib/serwer/supabase';
 import { wyslijMaile } from '$lib/serwer/resend';
 
@@ -57,17 +58,33 @@ const schemat = z.object({
 		start: z.string().max(10).optional().default('')
 	}),
 	zgody: z.record(z.string(), z.object({ wersja: z.string().max(20) })),
-	skladka_klienta: z.object({ min: z.number(), max: z.number(), szacunek: z.number() })
+	skladka_klienta: z.object({ min: z.number(), max: z.number(), szacunek: z.number() }),
+	// atrybucja kampanii — pole opcjonalne, nigdy nie blokuje przyjęcia wniosku
+	zrodlo_wizyty: z
+		.object({
+			utm_source: z.string().max(200).optional(),
+			utm_medium: z.string().max(200).optional(),
+			utm_campaign: z.string().max(200).optional(),
+			utm_content: z.string().max(200).optional(),
+			utm_term: z.string().max(200).optional(),
+			gclid: z.string().max(200).optional(),
+			fbclid: z.string().max(200).optional(),
+			msclkid: z.string().max(200).optional(),
+			wejscie: z.string().max(200).optional(),
+			skad: z.string().max(200).optional(),
+			ts: z.string().max(40).optional()
+		})
+		.strict()
+		.nullish()
 });
 
 /**
- * Walidacja negatywna RODO: w payloadzie (poza numerem telefonu) nie może być
- * żadnego ciągu 11 cyfr — PESEL-e mają zostać w przeglądarce.
+ * Czy błąd zapisu to „nie ma takiej kolumny"? PostgREST zwraca PGRST204, gdy
+ * kolumny nie ma w cache schematu; Postgres 42703 dla nieznanej kolumny.
  */
-function zawieraPesel(dane: z.infer<typeof schemat>): boolean {
-	const kopia = structuredClone(dane);
-	kopia.kontakt.telefon = ''; // telefon z prefiksem kraju to legalnie 11 cyfr
-	return /\d{11}/.test(JSON.stringify(kopia));
+function brakKolumnyZrodla(blad: { code?: string; message?: string }): boolean {
+	if (blad.code === 'PGRST204' || blad.code === '42703') return true;
+	return !!blad.message?.includes('zrodlo_wizyty');
 }
 
 /**
@@ -163,28 +180,41 @@ export const POST: RequestHandler = async ({ request, platform, fetch, url }) =>
 	}
 
 	const supabase = supabaseAdmin(env);
-	const { data: wpis, error: bladBazy } = await supabase
+	const wiersz = {
+		cennik_wersja: CENNIK_WERSJA,
+		branza: dane.branza,
+		wariant: dane.wariant + 1,
+		rozszerzenia: dane.rozszerzenia,
+		zalozona_adopcja: dane.zalozona_adopcja,
+		liczba_osob: dane.liczba_osob,
+		struktura: dane.struktura,
+		firma: dane.firma,
+		kontakt: dane.kontakt,
+		zgody: Object.fromEntries(
+			Object.entries(dane.zgody).map(([k, v]) => [k, { ...v, ts: new Date().toISOString() }])
+		),
+		skladka: { os: w.baza, min: w.min, max: w.max, szacunek: w.szacunek }
+	};
+
+	let { data: wpis, error: bladBazy } = await supabase
 		.from('ezb_wnioski')
-		.insert({
-			cennik_wersja: CENNIK_WERSJA,
-			branza: dane.branza,
-			wariant: dane.wariant + 1,
-			rozszerzenia: dane.rozszerzenia,
-			zalozona_adopcja: dane.zalozona_adopcja,
-			liczba_osob: dane.liczba_osob,
-			struktura: dane.struktura,
-			firma: dane.firma,
-			kontakt: dane.kontakt,
-			zgody: Object.fromEntries(
-				Object.entries(dane.zgody).map(([k, v]) => [
-					k,
-					{ ...v, ts: new Date().toISOString() }
-				])
-			),
-			skladka: { os: w.baza, min: w.min, max: w.max, szacunek: w.szacunek }
-		})
+		.insert({ ...wiersz, zrodlo_wizyty: dane.zrodlo_wizyty ?? null })
 		.select('id, nr_wniosku')
 		.single();
+
+	// Kolumna zrodlo_wizyty pochodzi z migracji 20260904. Gdyby Worker wjechał
+	// przed nią, ponawiamy zapis bez atrybucji — utrata leada jest droższa niż
+	// utrata informacji o kampanii (ta sama zasada, co przy błędzie maila).
+	let atrybucjaPominieta = false;
+	if (bladBazy && brakKolumnyZrodla(bladBazy)) {
+		console.error('brak kolumny zrodlo_wizyty — zapis bez atrybucji:', bladBazy.message);
+		atrybucjaPominieta = true;
+		({ data: wpis, error: bladBazy } = await supabase
+			.from('ezb_wnioski')
+			.insert(wiersz)
+			.select('id, nr_wniosku')
+			.single());
+	}
 
 	if (bladBazy || !wpis) {
 		console.error('wnioski insert:', bladBazy);
@@ -211,7 +241,13 @@ export const POST: RequestHandler = async ({ request, platform, fetch, url }) =>
 	}).catch((e) => [{ adresat: '-', blad: String(e) }]);
 
 	const zdarzenia = [
-		{ typ: 'wyslano', dane: { wniosek: wpis.id, branza: dane.branza } },
+		{
+			typ: 'wyslano',
+			dane: { wniosek: wpis.id, branza: dane.branza, zrodlo: dane.zrodlo_wizyty ?? null }
+		},
+		...(atrybucjaPominieta
+			? [{ typ: 'atrybucja_pominieta', dane: { wniosek: wpis.id } }]
+			: []),
 		...bledyMaili.map((b) => ({ typ: 'mail_blad', dane: { wniosek: wpis.id, ...b } }))
 	];
 	await supabase.from('ezb_zdarzenia').insert(zdarzenia.map((z) => ({ ...z, sesja: wpis.id })));

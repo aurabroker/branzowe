@@ -20,8 +20,12 @@ npm run build      # produkcyjny build (adapter Cloudflare)
 
 ## Wdrożenie
 
-1. **Supabase**: wykonaj `supabase/migrations/20260713120000_init.sql`, potem zasil cennik:
+1. **Supabase**: wykonaj migracje z `supabase/migrations/` w kolejności nazw
+   (`20260713120000_init.sql`, potem `20260904120000_zrodlo_wizyty.sql`), potem zasil cennik:
    `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… node scripts/seed-cennika.mjs`
+   Migracje wykonaj **przed** wdrożeniem Workera. Gdyby kolejność się odwróciła,
+   wniosek i tak zostanie zapisany — bez atrybucji i z wpisem `atrybucja_pominieta`
+   w `ezb_zdarzenia`.
 2. **Sekrety Workera** (`wrangler secret put …`): `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
    `RESEND_API_KEY`, `MAIL_OD`, `MAIL_OPIEKUN`, `GUS_API_KEY` — wzór w `.env.example`.
 3. `npx wrangler deploy`.
@@ -43,6 +47,21 @@ gdy wniosek nie zawiera struktury wiekowej, mail do klienta ma w załączniku ar
 - `src/routes/zakres-ochrony/[zakladka]` — prerenderowane: pakiety / katalogi / ograniczenia / słowniczek
 - `src/routes/api/{gus,wnioski}` — proxy REGON i przyjęcie wniosku (walidacja zod,
   przeliczenie składki po stronie serwera, zapis + maile)
+- `src/routes/branza/[slug]` — prerenderowane landingi branżowe (8 stron),
+  treści w `src/lib/dane/branze-landing.json`, kwoty brane z cennika
+- `src/routes/{sitemap.xml,robots.txt}` — mapa strony i robots; kroki lejka
+  (`/wniosek`) są poza indeksem przez `noindex` i nagłówek `X-Robots-Tag`
+- `src/lib/zrodlo.ts` — atrybucja kampanii (first touch) trafiająca do wniosku
+
+## Atrybucja kampanii
+
+Parametry UTM i identyfikatory kliknięcia z adresu wejścia są zapisywane w
+`sessionStorage` przy pierwszym wejściu w sesji (zasada first touch) i dołączane
+do wniosku jako `zrodlo_wizyty`. Zbieramy wyłącznie parametry kampanii, ścieżkę
+wejścia i domenę odsyłającą — bez ciasteczek i bez danych osobowych.
+
+Raport „który landing sprzedaje" idzie po `zrodlo_wizyty ->> 'utm_campaign'`
+albo `->> 'wejscie'` (oba mają indeks).
 
 ## Zasada RODO
 
