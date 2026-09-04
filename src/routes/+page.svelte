@@ -46,11 +46,12 @@
 	<h2 class="t">Osiem branż, osiem cenników</h2>
 	<p class="sub">
 		Składki i zakres różnią się między branżami — to nie jest jeden cennik z rabatem. Każda branża ma
-		trzy warianty z innym rozkładem sum ubezpieczenia.
+		trzy warianty z innym rozkładem sum ubezpieczenia. Wejdź w swoją, żeby zobaczyć tabelę świadczeń
+		i policzyć składkę.
 	</p>
 	<div class="siatka">
 		{#each produkty.branze as b (b.slug)}
-			<a class="kafel" href="/wniosek?branza={b.slug}">
+			<a class="kafel" href="/branza/{b.slug}">
 				<span class="ph"><img src={OBRAZY[b.slug]} alt={b.nazwa} loading="lazy" /></span>
 				<span class="tresc">
 					<strong>{b.nazwa}</strong>

@@ -1,0 +1,246 @@
+{
+  "_meta": {
+    "opis": "Treści landingów branżowych (/branza/[slug]). Kwoty NIE są tu zapisane — scenariusze wskazują kod świadczenia, a strona pobiera sumę z produkty.json dla danej branży i wariantu.",
+    "zasada": "Materiał informacyjny, nie oferta w rozumieniu art. 66 k.c. Żaden tekst nie może obiecywać świadczenia, którego nie ma w tabeli danej branży — scenariusz z pustym kodem jest pomijany przy renderowaniu."
+  },
+  "beauty": {
+    "naglowek": "Ubezpieczenie grupowe dla salonów beauty",
+    "lead": "Fryzjerstwo, kosmetyka, SPA i stylizacja paznokci to praca rękami, w kontakcie z chemią i narzędziem. Program branżowy wycenia to ryzyko osobno, zamiast wrzucać salon do wspólnego cennika usług.",
+    "kogo": [
+      "salony fryzjerskie",
+      "gabinety kosmetyczne",
+      "SPA i wellness",
+      "studia stylizacji paznokci",
+      "barber shopy"
+    ],
+    "scenariusze": [
+      {
+        "kod": "tu_w_pracy",
+        "tytul": "Uraz dłoni przy pracy",
+        "opis": "Skaleczenie nożyczkami, brzytwą albo frezarką kończy się szyciem i przerwą w pracy. Świadczenie liczone jest za każdy procent trwałego uszczerbku powstałego w pracy."
+      },
+      {
+        "kod": "pz_max",
+        "tytul": "Poważne zachorowanie",
+        "opis": "Katalog obejmuje ponad sto jednostek chorobowych. Wypłata jest jednorazowa i niezależna od zwolnienia lekarskiego czy zasiłku z ZUS."
+      },
+      {
+        "kod": "operacja",
+        "tytul": "Operacja chirurgiczna",
+        "opis": "Zabieg rozliczany jest w pięciu podgrupach zależnie od jego rozległości. Kwota poniżej dotyczy podgrupy najwyższej."
+      }
+    ],
+    "seo_tytul": "Ubezpieczenie grupowe dla salonu beauty — składka od {od}",
+    "seo_opis": "Grupowe ubezpieczenie na życie dla salonów fryzjerskich, kosmetycznych i SPA zatrudniających od 2 do 100 osób. Trzy warianty, cennik branżowy, wniosek online."
+  },
+  "budownictwo": {
+    "naglowek": "Ubezpieczenie grupowe dla firm budowlanych",
+    "lead": "Na budowie ryzyko jest fizyczne i codzienne: wysokość, sprzęt, transport materiału. Cennik branżowy odzwierciedla to w sumach za wypadek przy pracy, a nie w ogólnym narzucie.",
+    "kogo": [
+      "firmy ogólnobudowlane",
+      "ekipy wykończeniowe",
+      "instalatorzy",
+      "dekarze i elewacje",
+      "firmy remontowe"
+    ],
+    "scenariusze": [
+      {
+        "kod": "tu_w_pracy",
+        "tytul": "Upadek z rusztowania",
+        "opis": "Złamanie albo uraz kręgosłupa to tygodnie poza pracą. Świadczenie przysługuje za każdy procent trwałego uszczerbku powstałego przy pracy."
+      },
+      {
+        "kod": "szpital_w_pracy",
+        "tytul": "Pobyt w szpitalu po wypadku przy pracy",
+        "opis": "Stawka dzienna wypłacana za każdą dobę hospitalizacji, przez okres wskazany w warunkach umowy."
+      },
+      {
+        "kod": "zgon_w_pracy",
+        "tytul": "Zgon w wyniku wypadku przy pracy",
+        "opis": "Świadczenie wypłacane bliskim, gdy do zdarzenia doszło przy wykonywaniu pracy. Kwoty w wierszach nie sumują się — ta wartość zawiera już świadczenie podstawowe."
+      }
+    ],
+    "seo_tytul": "Ubezpieczenie grupowe dla firmy budowlanej — składka od {od}",
+    "seo_opis": "Grupowe ubezpieczenie na życie dla firm budowlanych, wykończeniowych i instalacyjnych od 2 do 100 osób. Sumy dopasowane do ryzyka wypadku przy pracy."
+  },
+  "gastronomia-hotelarstwo": {
+    "naglowek": "Ubezpieczenie grupowe dla gastronomii i hotelarstwa",
+    "lead": "Kuchnia to ogień, ostrza i mokra podłoga, a hotel to praca zmianowa przez cały rok. Program branżowy wycenia oba te profile wspólnie, z sumami dla wypadku przy pracy.",
+    "kogo": [
+      "restauracje i bary",
+      "kawiarnie i cukiernie",
+      "firmy cateringowe",
+      "hotele i pensjonaty",
+      "obiekty agroturystyczne"
+    ],
+    "scenariusze": [
+      {
+        "kod": "tu_w_pracy",
+        "tytul": "Oparzenie lub skaleczenie na kuchni",
+        "opis": "Kontakt z gorącym tłuszczem albo nożem bywa poważniejszy niż wygląda. Świadczenie liczone za każdy procent trwałego uszczerbku przy pracy."
+      },
+      {
+        "kod": "szpital_nw",
+        "tytul": "Szpital po nieszczęśliwym wypadku",
+        "opis": "Stawka dzienna za każdą dobę pobytu, niezależnie od tego, czy do zdarzenia doszło w lokalu, czy poza nim."
+      },
+      {
+        "kod": "pz_max",
+        "tytul": "Poważne zachorowanie",
+        "opis": "Jednorazowa wypłata po rozpoznaniu jednostki z katalogu. Środki są do dowolnego użycia, także na pokrycie zastępstwa na zmianie."
+      }
+    ],
+    "seo_tytul": "Ubezpieczenie grupowe dla restauracji i hotelu — składka od {od}",
+    "seo_opis": "Grupowe ubezpieczenie na życie dla gastronomii i hotelarstwa, firmy od 2 do 100 osób. Trzy warianty, cennik branżowy, wniosek online."
+  },
+  "ksiegowosc": {
+    "naglowek": "Ubezpieczenie grupowe dla biur rachunkowych",
+    "lead": "W księgowości ryzyko jest inne niż na produkcji: mniej wypadków, więcej obciążenia zdrowotnego i jazdy do klientów. Cennik branżowy przenosi ciężar sum na chorobę zamiast na uraz.",
+    "kogo": [
+      "biura rachunkowe",
+      "doradcy podatkowi",
+      "firmy audytorskie",
+      "kadry i płace",
+      "biura obsługi finansowej"
+    ],
+    "scenariusze": [
+      {
+        "kod": "pz_max",
+        "tytul": "Poważne zachorowanie",
+        "opis": "Katalog obejmuje ponad sto jednostek, w tym choroby układu krążenia. Wypłata jest jednorazowa i nie zależy od świadczeń z ZUS."
+      },
+      {
+        "kod": "leczenie_spec",
+        "tytul": "Leczenie specjalistyczne",
+        "opis": "Świadczenie na metody wskazane w warunkach umowy, w tym chemioterapię i radioterapię. Kwota poniżej to górny limit."
+      },
+      {
+        "kod": "tu_komunikacyjny",
+        "tytul": "Wypadek w drodze do klienta",
+        "opis": "Dojazdy do klientów i urzędów to realna ekspozycja na ryzyko drogowe. Świadczenie liczone za każdy procent trwałego uszczerbku po wypadku komunikacyjnym."
+      }
+    ],
+    "seo_tytul": "Ubezpieczenie grupowe dla biura rachunkowego — składka od {od}",
+    "seo_opis": "Grupowe ubezpieczenie na życie dla biur rachunkowych, doradztwa podatkowego i audytu. Firmy od 2 do 100 osób, trzy warianty, wniosek online."
+  },
+  "nieruchomosci": {
+    "naglowek": "Ubezpieczenie grupowe dla biur nieruchomości",
+    "lead": "Praca agenta to głównie droga: prezentacje, odbiory, spotkania w terenie. Program branżowy kładzie nacisk na sumy za zdarzenia komunikacyjne.",
+    "kogo": [
+      "biura nieruchomości",
+      "agenci i pośrednicy",
+      "zarządcy najmu",
+      "wspólnoty i administracja",
+      "działy sprzedaży deweloperów"
+    ],
+    "scenariusze": [
+      {
+        "kod": "tu_komunikacyjny",
+        "tytul": "Wypadek podczas dojazdu na prezentację",
+        "opis": "Kilkanaście tras tygodniowo to ekspozycja porównywalna z zawodowym kierowcą. Świadczenie za każdy procent trwałego uszczerbku po wypadku komunikacyjnym."
+      },
+      {
+        "kod": "pz_max",
+        "tytul": "Poważne zachorowanie",
+        "opis": "Jednorazowa wypłata po rozpoznaniu jednostki z katalogu, niezależna od zasiłku chorobowego."
+      },
+      {
+        "kod": "operacja",
+        "tytul": "Operacja chirurgiczna",
+        "opis": "Zabieg rozliczany w pięciu podgrupach zależnie od rozległości. Kwota poniżej dotyczy podgrupy najwyższej."
+      }
+    ],
+    "seo_tytul": "Ubezpieczenie grupowe dla biura nieruchomości — składka od {od}",
+    "seo_opis": "Grupowe ubezpieczenie na życie dla biur nieruchomości, zarządców najmu i deweloperów. Firmy od 2 do 100 osób, cennik branżowy, wniosek online."
+  },
+  "piekarnictwo": {
+    "naglowek": "Ubezpieczenie grupowe dla piekarni i cukierni",
+    "lead": "Piec, maszyny i praca nocna to zestaw ryzyk, których nie ma w biurze. Cennik branżowy wycenia je osobno, z sumami dla zdarzeń przy pracy.",
+    "kogo": [
+      "piekarnie",
+      "cukiernie",
+      "zakłady produkcji pieczywa",
+      "lodziarnie i wytwórnie deserów",
+      "punkty wypieku"
+    ],
+    "scenariusze": [
+      {
+        "kod": "tu_w_pracy",
+        "tytul": "Oparzenie przy piecu lub uraz przy maszynie",
+        "opis": "Kontakt z rozgrzaną blachą albo miesiarką to najczęstsze zdarzenia w zakładzie. Świadczenie za każdy procent trwałego uszczerbku przy pracy."
+      },
+      {
+        "kod": "szpital_w_pracy",
+        "tytul": "Szpital po wypadku przy pracy",
+        "opis": "Stawka dzienna za każdą dobę hospitalizacji, przez okres wskazany w warunkach umowy."
+      },
+      {
+        "kod": "pz_max",
+        "tytul": "Poważne zachorowanie",
+        "opis": "Praca zmianowa i nocna obciąża organizm długofalowo. Wypłata jednorazowa po rozpoznaniu jednostki z katalogu."
+      }
+    ],
+    "seo_tytul": "Ubezpieczenie grupowe dla piekarni i cukierni — składka od {od}",
+    "seo_opis": "Grupowe ubezpieczenie na życie dla piekarni, cukierni i zakładów produkcji pieczywa. Firmy od 2 do 100 osób, trzy warianty, wniosek online."
+  },
+  "stomatologia": {
+    "naglowek": "Ubezpieczenie grupowe dla gabinetów stomatologicznych",
+    "lead": "Gabinet to praca w wymuszonej pozycji, z ostrym narzędziem i materiałem zakaźnym. Program branżowy wycenia to ryzyko osobno, a układ sum między wariantami jest tu inny niż w pozostałych branżach — warto porównać je wiersz po wierszu.",
+    "kogo": [
+      "gabinety stomatologiczne",
+      "kliniki i centra implantologii",
+      "ortodoncja",
+      "higienistki i asysta",
+      "protetyka i technika dentystyczna"
+    ],
+    "scenariusze": [
+      {
+        "kod": "tu_w_pracy",
+        "tytul": "Zakłucie albo uraz przeciążeniowy",
+        "opis": "Zakłucie narzędziem i przewlekłe obciążenie kręgosłupa to dwa najczęstsze problemy w gabinecie. Świadczenie za każdy procent trwałego uszczerbku przy pracy."
+      },
+      {
+        "kod": "pz_max",
+        "tytul": "Poważne zachorowanie",
+        "opis": "Katalog obejmuje także choroby zakaźne. Wypłata jednorazowa po rozpoznaniu, niezależna od świadczeń z ZUS."
+      },
+      {
+        "kod": "operacja",
+        "tytul": "Operacja chirurgiczna",
+        "opis": "Zabieg rozliczany w pięciu podgrupach zależnie od rozległości. Kwota poniżej dotyczy podgrupy najwyższej."
+      }
+    ],
+    "seo_tytul": "Ubezpieczenie grupowe dla gabinetu stomatologicznego — składka od {od}",
+    "seo_opis": "Grupowe ubezpieczenie na życie dla gabinetów i klinik stomatologicznych. Firmy od 2 do 100 osób, trzy warianty, cennik branżowy, wniosek online."
+  },
+  "transport-ladowy": {
+    "naglowek": "Ubezpieczenie grupowe dla firm transportowych",
+    "lead": "Kierowca spędza w ruchu drogowym cały dzień pracy. W tej branży sumy za zdarzenia komunikacyjne przy pracy są najwyższą pozycją tabeli.",
+    "kogo": [
+      "firmy transportowe",
+      "spedycja",
+      "kurierzy i dostawy",
+      "transport osobowy",
+      "przewóz materiałów"
+    ],
+    "scenariusze": [
+      {
+        "kod": "zgon_komunikacyjny_w_pracy",
+        "tytul": "Wypadek komunikacyjny przy pracy",
+        "opis": "Najwyższa pozycja w tabeli tej branży. Kwoty w wierszach nie sumują się — ta wartość zawiera już świadczenie podstawowe."
+      },
+      {
+        "kod": "tu_komunikacyjny",
+        "tytul": "Trwały uszczerbek po wypadku na drodze",
+        "opis": "Świadczenie liczone za każdy procent trwałego uszczerbku powstałego w wypadku komunikacyjnym."
+      },
+      {
+        "kod": "szpital_nw",
+        "tytul": "Szpital po nieszczęśliwym wypadku",
+        "opis": "Stawka dzienna za każdą dobę pobytu, przez okres wskazany w warunkach umowy."
+      }
+    ],
+    "seo_tytul": "Ubezpieczenie grupowe dla firmy transportowej — składka od {od}",
+    "seo_opis": "Grupowe ubezpieczenie na życie dla firm transportowych, spedycji i kurierów. Firmy od 2 do 100 osób, wysokie sumy komunikacyjne, wniosek online."
+  }
+}
