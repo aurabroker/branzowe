@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json.schemastore.org/package",
+  "name": "gus-regon-verification",
+  "version": "1.0.0",
+  "description": "Weryfikacja REGON/NIP/KRS w bazie GUS (API BIR 1.1) - walidacja sumy kontrolnej offline + klient SOAP bez zaleznosci.",
+  "language": "JavaScript (ESM)",
+  "runtime": "Node >= 18 / Deno / Bun / Cloudflare Workers (wymagany globalny fetch)",
+  "dependencies": {},
+  "license": "MIT",
+  "api": {
+    "provider": "Glowny Urzad Statystyczny - API BIR wersja 1.1",
+    "protocol": "SOAP 1.2 + WS-Addressing",
+    "endpoints": {
+      "prod": "https://wyszukiwarkaregon.stat.gov.pl/wsBIR/UslugaBIRzewnPubl.svc",
+      "test": "https://wyszukiwarkaregontest.stat.gov.pl/wsBIR/UslugaBIRzewnPubl.svc"
+    },
+    "wsdl": {
+      "prod": "https://wyszukiwarkaregon.stat.gov.pl/wsBIR/wsdl/UslugaBIRzewnPubl-ver11-prod.wsdl",
+      "test": "https://wyszukiwarkaregontest.stat.gov.pl/wsBIR/wsdl/UslugaBIRzewnPubl-ver11-test.wsdl"
+    },
+    "testApiKey": "abcde12345abcde12345",
+    "apiKeyRequest": "https://api.stat.gov.pl/Home/RegonApi - wniosek o klucz produkcyjny",
+    "namespaces": {
+      "envelope": "http://www.w3.org/2003/05/soap-envelope",
+      "addressing": "http://www.w3.org/2005/08/addressing",
+      "bir": "http://CIS/BIR/PUBL/2014/07",
+      "dataContract": "http://CIS/BIR/PUBL/2014/07/DataContract"
+    },
+    "soapActionPrefix": "http://CIS/BIR/PUBL/2014/07/IUslugaBIRzewnPubl",
+    "operations": [
+      {
+        "name": "Zaloguj",
+        "action": "http://CIS/BIR/PUBL/2014/07/IUslugaBIRzewnPubl/Zaloguj",
+        "params": [
+          "pKluczUzytkownika"
+        ],
+        "returns": "identyfikator sesji (sid)"
+      },
+      {
+        "name": "Wyloguj",
+        "action": "http://CIS/BIR/PUBL/2014/07/IUslugaBIRzewnPubl/Wyloguj",
+        "params": [
+          "pIdentyfikatorSesji"
+        ],
+        "returns": "true/false"
+      },
+      {
+        "name": "DaneSzukajPodmioty",
+        "action": "http://CIS/BIR/PUBL/2014/07/IUslugaBIRzewnPubl/DaneSzukajPodmioty",
+        "params": [
+          "pParametryWyszukiwania"
+        ],
+        "returns": "XML <root><dane>... (escapowany w wyniku)"
+      },
+      {
+        "name": "DanePobierzPelnyRaport",
+        "action": "http://CIS/BIR/PUBL/2014/07/IUslugaBIRzewnPubl/DanePobierzPelnyRaport",
+        "params": [
+          "pRegon",
+          "pNazwaRaportu"
+        ],
+        "returns": "XML <root><dane>..."
+      },
+      {
+        "name": "GetValue",
+        "action": "http://CIS/BIR/PUBL/2014/07/IUslugaBIRzewnPubl/GetValue",
+        "params": [
+          "pNazwaParametru"
+        ],
+        "returns": "wartosc parametru (np. StatusUslugi, KomunikatKod, KomunikatTresc)"
+      }
+    ],
+    "session": {
+      "header": "sid",
+      "note": "Identyfikator sesji przekazywany jako naglowek HTTP \"sid\" przy kazdym wywolaniu poza Zaloguj. Sesja wygasa po ok. 60 min bezczynnosci; ErrorCode 2 => zaloguj ponownie."
+    },
+    "searchParameters": [
+      "Regon",
+      "Nip",
+      "Krs",
+      "Regony9zn",
+      "Regony14zn",
+      "Nipy",
+      "Krsy"
+    ],
+    "reportNames": {
+      "P": "BIR11OsPrawna",
+      "LP": "BIR11JednLokalnaOsPrawnej",
+      "LF": "BIR11JednLokalnaOsFizycznej",
+      "F/SilosID=1": "BIR11OsFizycznaDzialalnoscCeidg",
+      "F/SilosID=2": "BIR11OsFizycznaDzialalnoscRolnicza",
+      "F/SilosID=3": "BIR11OsFizycznaDzialalnoscPozostala",
+      "F/SilosID=4": "BIR11OsFizycznaDzialalnoscSkreslonaDo20141108",
+      "F/SilosID=6": "BIR11OsFizycznaDaneOgolne"
+    },
+    "errorCodes": {
+      "0": "Brak bledu",
+      "1": "Nieprawidlowy numer identyfikacyjny",
+      "2": "Brak sesji lub sesja wygasla",
+      "4": "Nie znaleziono podmiotu dla podanych kryteriow",
+      "5": "Za duza liczba wynikow",
+      "7": "Blednie podane parametry wyszukiwania"
+    },
+    "limits": "Klucz produkcyjny: limity dzienne/na minute ustalane przez GUS. Zalecane cache wynikow (np. 24h) i jedna sesja na wiele zapytan."
+  },
+  "algorithms": {
+    "regon9": {
+      "weights": [
+        8,
+        9,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "modulo": 11,
+      "note": "suma wag * cyfr, reszta mod 11; wynik 10 traktowany jako 0; porownanie z 9. cyfra"
+    },
+    "regon14": {
+      "weights": [
+        2,
+        4,
+        8,
+        5,
+        0,
+        9,
+        7,
+        3,
+        6,
+        1,
+        2,
+        4,
+        8
+      ],
+      "modulo": 11,
+      "note": "dodatkowo pierwsze 9 cyfr musi byc poprawnym REGON-em 9-cyfrowym"
+    },
+    "nip": {
+      "weights": [
+        6,
+        5,
+        7,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "modulo": 11,
+      "note": "reszta rowna 10 => numer niepoprawny"
+    },
+    "krs": {
+      "note": "10 cyfr, brak sumy kontrolnej - walidowany tylko format"
+    }
+  },
+  "files": {
+    "gus/regon.js": "/**\n * Offline (bez sieci) walidacja identyfikatorow: REGON 9/14 i NIP.\n * Sluzy jako pierwszy, darmowy filtr przed odpytaniem API GUS.\n */\n\nconst WEIGHTS_REGON_9 = [8, 9, 2, 3, 4, 5, 6, 7];\nconst WEIGHTS_REGON_14 = [2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8];\nconst WEIGHTS_NIP = [6, 5, 7, 2, 3, 4, 5, 6, 7];\n\n/** Usuwa spacje, myslniki i inne znaki nieliczbowe. */\nexport function normalizeDigits(value) {\n  return String(value ?? '').replace(/\\D/g, '');\n}\n\nfunction checksumMatches(digits, weights) {\n  const sum = weights.reduce((acc, w, i) => acc + w * Number(digits[i]), 0);\n  // reszta z 11; wynik 10 traktowany jest jak 0\n  return (sum % 11) % 10 === Number(digits[weights.length]);\n}\n\n/** REGON 9-cyfrowy (podmiot) lub 14-cyfrowy (jednostka lokalna). */\nexport function isValidRegon(value) {\n  const regon = normalizeDigits(value);\n  if (regon.length === 9) return checksumMatches(regon, WEIGHTS_REGON_9);\n  if (regon.length === 14) {\n    return checksumMatches(regon.slice(0, 9), WEIGHTS_REGON_9)\n      && checksumMatches(regon, WEIGHTS_REGON_14);\n  }\n  return false;\n}\n\n/** NIP 10-cyfrowy. Suma kontrolna rowna 10 oznacza numer niepoprawny. */\nexport function isValidNip(value) {\n  const nip = normalizeDigits(value);\n  if (nip.length !== 10) return false;\n  const sum = WEIGHTS_NIP.reduce((acc, w, i) => acc + w * Number(nip[i]), 0);\n  const control = sum % 11;\n  return control !== 10 && control === Number(nip[9]);\n}\n\n/** KRS to 10 cyfr bez sumy kontrolnej - sprawdzamy tylko format. */\nexport function isValidKrs(value) {\n  return /^\\d{10}$/.test(normalizeDigits(value));\n}\n\n/** Rozpoznaje, czym jest podany ciag: 'regon' | 'regon14' | 'nip' | 'krs' | null. */\nexport function detectIdentifierType(value) {\n  const digits = normalizeDigits(value);\n  if (digits.length === 14 && isValidRegon(digits)) return 'regon14';\n  if (digits.length === 9 && isValidRegon(digits)) return 'regon';\n  if (digits.length === 10 && isValidNip(digits)) return 'nip';\n  if (digits.length === 10) return 'krs';\n  return null;\n}\n",
+    "gus/xml.js": "/**\n * Minimalne parsowanie XML zwracanego przez BIR1.1 - bez zaleznosci zewnetrznych.\n * GUS zwraca plaski XML (<root><dane>...</dane></root>), wiec pelny parser\n * nie jest potrzebny.\n */\n\nexport function unescapeXml(text) {\n  return String(text ?? '')\n    .replace(/<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>/g, '$1')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&quot;/g, '\"')\n    .replace(/&apos;/g, \"'\")\n    .replace(/&#(\\d+);/g, (_, code) => String.fromCharCode(Number(code)))\n    .replace(/&amp;/g, '&');\n}\n\nexport function escapeXml(text) {\n  return String(text ?? '')\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&apos;');\n}\n\n/** Zwraca zawartosc pierwszego znacznika o podanej nazwie (ignoruje prefiks ns). */\nexport function extractTag(xml, tagName) {\n  const re = new RegExp(`<(?:\\\\w+:)?${tagName}[^>]*>([\\\\s\\\\S]*?)</(?:\\\\w+:)?${tagName}>`, 'i');\n  const match = re.exec(String(xml ?? ''));\n  return match ? match[1] : null;\n}\n\n/** Zamienia plaski blok XML na obiekt { nazwaZnacznika: wartosc }. */\nexport function parseFlatBlock(block) {\n  const result = {};\n  const re = /<([\\w.:-]+)\\s*(?:\\/>|>([\\s\\S]*?)<\\/\\1>)/g;\n  let match;\n  while ((match = re.exec(block)) !== null) {\n    const key = match[1].replace(/^\\w+:/, '');\n    const value = match[2] === undefined ? '' : unescapeXml(match[2]).trim();\n    result[key] = value;\n  }\n  return result;\n}\n\n/** Parsuje <root><dane>...</dane><dane>...</dane></root> do tablicy obiektow. */\nexport function parseDaneRecords(xml) {\n  const records = [];\n  const re = /<dane>([\\s\\S]*?)<\\/dane>/gi;\n  let match;\n  while ((match = re.exec(String(xml ?? ''))) !== null) {\n    records.push(parseFlatBlock(match[1]));\n  }\n  return records;\n}\n",
+    "gus/gusClient.js": "/**\n * Klient SOAP dla uslugi GUS BIR1.1 (wyszukiwarka REGON).\n * Bez zaleznosci - wymaga globalnego fetch (Node >= 18, Deno, Bun, Workers, przegladarka*).\n * (*) w przegladarce zablokuje CORS - uzywaj po stronie serwera.\n */\n\nimport { escapeXml, extractTag, parseDaneRecords, unescapeXml } from './xml.js';\n\nexport const ENDPOINTS = {\n  prod: 'https://wyszukiwarkaregon.stat.gov.pl/wsBIR/UslugaBIRzewnPubl.svc',\n  test: 'https://wyszukiwarkaregontest.stat.gov.pl/wsBIR/UslugaBIRzewnPubl.svc',\n};\n\n/** Klucz testowy udostepniony publicznie przez GUS - dziala tylko na endpoincie test. */\nexport const TEST_API_KEY = 'abcde12345abcde12345';\n\nconst NS_ENVELOPE = 'http://www.w3.org/2003/05/soap-envelope';\nconst NS_ADDRESSING = 'http://www.w3.org/2005/08/addressing';\nconst NS_BIR = 'http://CIS/BIR/PUBL/2014/07';\nconst NS_DATA_CONTRACT = 'http://CIS/BIR/PUBL/2014/07/DataContract';\nconst ACTION_PREFIX = 'http://CIS/BIR/PUBL/2014/07/IUslugaBIRzewnPubl';\n\n/** Nazwy raportow pelnych wg typu podmiotu i silosu. */\nexport const REPORT_NAMES = {\n  P: 'BIR11OsPrawna',\n  LP: 'BIR11JednLokalnaOsPrawnej',\n  LF: 'BIR11JednLokalnaOsFizycznej',\n  F: {\n    1: 'BIR11OsFizycznaDzialalnoscCeidg',\n    2: 'BIR11OsFizycznaDzialalnoscRolnicza',\n    3: 'BIR11OsFizycznaDzialalnoscPozostala',\n    4: 'BIR11OsFizycznaDzialalnoscSkreslonaDo20141108',\n    6: 'BIR11OsFizycznaDaneOgolne',\n  },\n};\n\n/** Kody bledow zwracane w polu ErrorCode wyniku wyszukiwania. */\nexport const ERROR_CODES = {\n  0: 'Brak bledu',\n  1: 'Nieprawidlowy numer identyfikacyjny',\n  2: 'Brak sesji lub sesja wygasla',\n  4: 'Nie znaleziono podmiotu dla podanych kryteriow',\n  5: 'Za duza liczba wynikow',\n  7: 'Blednie podane parametry wyszukiwania',\n};\n\nexport class GusError extends Error {\n  constructor(message, { code = null, status = null, body = null } = {}) {\n    super(message);\n    this.name = 'GusError';\n    this.code = code;\n    this.status = status;\n    this.body = body;\n  }\n}\n\nexport class GusClient {\n  /**\n   * @param {object} options\n   * @param {string} options.apiKey       klucz uzytkownika BIR\n   * @param {'prod'|'test'|string} [options.environment='prod'] lub pelny URL endpointu\n   * @param {number} [options.timeoutMs=15000]\n   * @param {typeof fetch} [options.fetchImpl]\n   */\n  constructor({ apiKey, environment = 'prod', timeoutMs = 15000, fetchImpl } = {}) {\n    if (!apiKey) throw new GusError('Brak apiKey do uslugi GUS BIR1.1');\n    this.apiKey = apiKey;\n    this.endpoint = ENDPOINTS[environment] ?? environment;\n    this.timeoutMs = timeoutMs;\n    this.fetch = fetchImpl ?? globalThis.fetch;\n    if (typeof this.fetch !== 'function') {\n      throw new GusError('Brak implementacji fetch - podaj options.fetchImpl');\n    }\n    this.sid = null;\n  }\n\n  buildEnvelope(action, bodyXml) {\n    return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>`\n      + `<soap:Envelope xmlns:soap=\"${NS_ENVELOPE}\" xmlns:ns=\"${NS_BIR}\" xmlns:dat=\"${NS_DATA_CONTRACT}\">`\n      + `<soap:Header xmlns:wsa=\"${NS_ADDRESSING}\">`\n      + `<wsa:To>${this.endpoint}</wsa:To>`\n      + `<wsa:Action>${ACTION_PREFIX}/${action}</wsa:Action>`\n      + `</soap:Header>`\n      + `<soap:Body>${bodyXml}</soap:Body>`\n      + `</soap:Envelope>`;\n  }\n\n  async call(action, bodyXml, { withSession = true } = {}) {\n    const headers = {\n      'Content-Type': `application/soap+xml; charset=UTF-8; action=\"${ACTION_PREFIX}/${action}\"`,\n    };\n    if (withSession && this.sid) headers.sid = this.sid;\n\n    const controller = new AbortController();\n    const timer = setTimeout(() => controller.abort(), this.timeoutMs);\n    let response;\n    try {\n      response = await this.fetch(this.endpoint, {\n        method: 'POST',\n        headers,\n        body: this.buildEnvelope(action, bodyXml),\n        signal: controller.signal,\n      });\n    } catch (error) {\n      throw new GusError(`Blad polaczenia z GUS (${action}): ${error.message}`);\n    } finally {\n      clearTimeout(timer);\n    }\n\n    const text = await response.text();\n    if (!response.ok) {\n      throw new GusError(`GUS zwrocil HTTP ${response.status} dla ${action}`, {\n        status: response.status,\n        body: text.slice(0, 2000),\n      });\n    }\n    const fault = extractTag(text, 'Reason') ?? extractTag(text, 'faultstring');\n    if (fault) throw new GusError(`SOAP Fault z GUS (${action}): ${unescapeXml(fault).trim()}`, { body: text.slice(0, 2000) });\n\n    const result = extractTag(text, `${action}Result`);\n    return result === null ? '' : unescapeXml(result).trim();\n  }\n\n  /** Loguje sie i zapamietuje identyfikator sesji (sid). */\n  async login() {\n    const sid = await this.call(\n      'Zaloguj',\n      `<ns:Zaloguj><ns:pKluczUzytkownika>${escapeXml(this.apiKey)}</ns:pKluczUzytkownika></ns:Zaloguj>`,\n      { withSession: false },\n    );\n    if (!sid) throw new GusError('Logowanie do GUS nieudane - sprawdz klucz API i srodowisko');\n    this.sid = sid;\n    return sid;\n  }\n\n  async ensureSession() {\n    if (!this.sid) await this.login();\n    return this.sid;\n  }\n\n  async logout() {\n    if (!this.sid) return;\n    const sid = this.sid;\n    this.sid = null;\n    await this.call('Wyloguj', `<ns:Wyloguj><ns:pIdentyfikatorSesji>${escapeXml(sid)}</ns:pIdentyfikatorSesji></ns:Wyloguj>`, { withSession: false });\n  }\n\n  /** GetValue - np. 'StatusUslugi' ('1' = dostepna), 'KomunikatKod', 'KomunikatTresc'. */\n  async getValue(parameterName) {\n    return this.call('GetValue', `<ns:GetValue><ns:pNazwaParametru>${escapeXml(parameterName)}</ns:pNazwaParametru></ns:GetValue>`);\n  }\n\n  /**\n   * DaneSzukajPodmioty.\n   * @param {{regon?:string, nip?:string, krs?:string, regony9zn?:string[], nipy?:string[], krsy?:string[]}} params\n   * @returns {Promise<Array<object>>} rekordy podsumowujace\n   */\n  async search(params) {\n    await this.ensureSession();\n    const mapping = {\n      regon: 'Regon',\n      nip: 'Nip',\n      krs: 'Krs',\n      regony9zn: 'Regony9zn',\n      regony14zn: 'Regony14zn',\n      nipy: 'Nipy',\n      krsy: 'Krsy',\n    };\n    const fields = Object.entries(params)\n      .filter(([key, value]) => mapping[key] && value != null && value !== '')\n      .map(([key, value]) => {\n        const text = Array.isArray(value) ? value.join(',') : value;\n        return `<dat:${mapping[key]}>${escapeXml(text)}</dat:${mapping[key]}>`;\n      });\n    if (fields.length === 0) throw new GusError('Nie podano zadnego kryterium wyszukiwania');\n\n    const result = await this.call(\n      'DaneSzukajPodmioty',\n      `<ns:DaneSzukajPodmioty><ns:pParametryWyszukiwania>${fields.join('')}</ns:pParametryWyszukiwania></ns:DaneSzukajPodmioty>`,\n    );\n\n    const errorCode = extractTag(result, 'ErrorCode');\n    if (errorCode && Number(errorCode) !== 0) {\n      const code = Number(errorCode);\n      if (code === 4) return []; // nie znaleziono - to nie jest blad techniczny\n      if (code === 2) { // sesja wygasla - jedna proba ponowienia\n        this.sid = null;\n        await this.login();\n        return this.search(params);\n      }\n      throw new GusError(\n        extractTag(result, 'ErrorMessagePl') || ERROR_CODES[code] || `Blad GUS ${code}`,\n        { code },\n      );\n    }\n    return parseDaneRecords(result);\n  }\n\n  /** DanePobierzPelnyRaport - szczegolowe dane podmiotu. */\n  async fullReport(regon, reportName) {\n    await this.ensureSession();\n    const result = await this.call(\n      'DanePobierzPelnyRaport',\n      `<ns:DanePobierzPelnyRaport>`\n      + `<ns:pRegon>${escapeXml(regon)}</ns:pRegon>`\n      + `<ns:pNazwaRaportu>${escapeXml(reportName)}</ns:pNazwaRaportu>`\n      + `</ns:DanePobierzPelnyRaport>`,\n    );\n    const records = parseDaneRecords(result);\n    return records[0] ?? null;\n  }\n}\n\n/** Dobiera nazwe raportu pelnego na podstawie pol Typ i SilosID z wyszukiwania. */\nexport function resolveReportName(summary) {\n  const type = String(summary?.Typ ?? '').toUpperCase();\n  if (type === 'P') return REPORT_NAMES.P;\n  if (type === 'LP') return REPORT_NAMES.LP;\n  if (type === 'LF') return REPORT_NAMES.LF;\n  if (type === 'F') return REPORT_NAMES.F[Number(summary?.SilosID)] ?? REPORT_NAMES.F[6];\n  return null;\n}\n",
+    "gus/verifyRegon.js": "/**\n * Warstwa wysokopoziomowa: jedna funkcja weryfikujaca REGON/NIP/KRS w bazie GUS.\n */\n\nimport { GusClient, GusError, resolveReportName } from './gusClient.js';\nimport { detectIdentifierType, isValidNip, isValidRegon, normalizeDigits } from './regon.js';\n\n/** Sprowadza rekord z GUS do stabilnego, wlasnego ksztaltu. */\nexport function normalizeEntity(summary, report) {\n  const stripPrefix = (obj) => Object.fromEntries(\n    Object.entries(obj ?? {}).map(([key, value]) => [\n      key.replace(/^(praw|fiz|lokpraw|lokfiz)_/, ''),\n      value,\n    ]),\n  );\n  const detail = stripPrefix(report);\n  const pick = (...keys) => {\n    for (const key of keys) {\n      const value = detail[key] ?? summary?.[key];\n      if (value != null && value !== '') return value;\n    }\n    return null;\n  };\n\n  const street = pick('adSiedzUlica_Nazwa', 'Ulica');\n  const buildingNo = pick('adSiedzNumerNieruchomosci', 'NrNieruchomosci');\n  const flatNo = pick('adSiedzNumerLokalu', 'NrLokalu');\n\n  return {\n    regon: pick('regon9', 'regon14', 'Regon'),\n    nip: pick('nip', 'Nip'),\n    nipStatus: pick('statusNip', 'StatusNip'),\n    krs: pick('numerWRejestrzeEwidencji', 'Krs'),\n    name: pick('nazwa', 'Nazwa'),\n    shortName: pick('nazwaSkrocona'),\n    legalFormCode: pick('podstawowaFormaPrawna_Symbol', 'szczegolnaFormaPrawna_Symbol'),\n    legalFormName: pick('podstawowaFormaPrawna_Nazwa', 'szczegolnaFormaPrawna_Nazwa'),\n    pkdMain: pick('podstawowaFormaPrawna_Symbol_PKD', 'dzialalnoscPodstawowa'),\n    startDate: pick('dataRozpoczeciaDzialalnosci', 'dataPowstania'),\n    suspendedFrom: pick('dataZawieszeniaDzialalnosci'),\n    resumedFrom: pick('dataWznowieniaDzialalnosci'),\n    endDate: pick('dataZakonczeniaDzialalnosci', 'DataZakonczeniaDzialalnosci'),\n    deletionDate: pick('dataSkresleniaZRegon'),\n    address: {\n      street: street ? String(street).replace(/^ul\\.\\s*/i, '') : null,\n      buildingNo: buildingNo || null,\n      flatNo: flatNo || null,\n      postalCode: formatPostalCode(pick('adSiedzKodPocztowy', 'KodPocztowy')),\n      city: pick('adSiedzMiejscowosc_Nazwa', 'Miejscowosc'),\n      commune: pick('adSiedzGmina_Nazwa', 'Gmina'),\n      county: pick('adSiedzPowiat_Nazwa', 'Powiat'),\n      voivodeship: pick('adSiedzWojewodztwo_Nazwa', 'Wojewodztwo'),\n      country: pick('adSiedzKraj_Nazwa') ?? 'POLSKA',\n    },\n    type: summary?.Typ ?? null,\n    silosId: summary?.SilosID ? Number(summary.SilosID) : null,\n  };\n}\n\nfunction formatPostalCode(value) {\n  const digits = normalizeDigits(value);\n  return digits.length === 5 ? `${digits.slice(0, 2)}-${digits.slice(2)}` : (value || null);\n}\n\n/** Podmiot uznajemy za aktywny, gdy nie ma daty zakonczenia/skreslenia ani trwajacego zawieszenia. */\nexport function isActive(entity) {\n  if (entity.endDate || entity.deletionDate) return false;\n  if (entity.suspendedFrom && !entity.resumedFrom) return false;\n  return true;\n}\n\n/**\n * Weryfikuje identyfikator w bazie GUS.\n *\n * @param {string} identifier REGON (9/14), NIP lub KRS\n * @param {object} options\n * @param {string} options.apiKey\n * @param {'prod'|'test'|string} [options.environment='prod']\n * @param {boolean} [options.fullReport=true] pobierz raport szczegolowy\n * @param {GusClient} [options.client] wlasna instancja (pozwala wspoldzielic sesje)\n * @returns {Promise<{valid:boolean, found:boolean, active:boolean|null, identifierType:string|null,\n *   entity:object|null, error:string|null, raw:{summary:object|null, report:object|null}}>}\n */\nexport async function verifyRegon(identifier, options = {}) {\n  const { apiKey, environment = 'prod', fullReport = true, client: providedClient } = options;\n  const digits = normalizeDigits(identifier);\n  const identifierType = detectIdentifierType(digits);\n\n  const base = {\n    valid: false,\n    found: false,\n    active: null,\n    identifierType,\n    entity: null,\n    error: null,\n    raw: { summary: null, report: null },\n  };\n\n  if (!identifierType) {\n    return { ...base, error: 'Niepoprawny format lub suma kontrolna identyfikatora' };\n  }\n  base.valid = true;\n\n  const client = providedClient ?? new GusClient({ apiKey, environment });\n  const ownsClient = !providedClient;\n\n  try {\n    const params = identifierType === 'nip'\n      ? { nip: digits }\n      : identifierType === 'krs'\n        ? { krs: digits }\n        : { regon: digits };\n\n    const results = await client.search(params);\n    if (results.length === 0) {\n      return { ...base, error: 'Nie znaleziono podmiotu w bazie GUS' };\n    }\n\n    const summary = results[0];\n    base.found = true;\n    base.raw.summary = summary;\n\n    let report = null;\n    if (fullReport) {\n      const reportName = resolveReportName(summary);\n      if (reportName) {\n        report = await client.fullReport(summary.Regon, reportName);\n        base.raw.report = report;\n      }\n    }\n\n    const entity = normalizeEntity(summary, report);\n    return { ...base, entity, active: isActive(entity) };\n  } catch (error) {\n    if (error instanceof GusError) return { ...base, error: error.message };\n    throw error;\n  } finally {\n    if (ownsClient) {\n      await client.logout().catch(() => {});\n    }\n  }\n}\n",
+    "gus/index.js": "export { isValidRegon, isValidNip, isValidKrs, normalizeDigits, detectIdentifierType } from './regon.js';\nexport { GusClient, GusError, ENDPOINTS, TEST_API_KEY, REPORT_NAMES, ERROR_CODES, resolveReportName } from './gusClient.js';\nexport { verifyRegon, normalizeEntity, isActive } from './verifyRegon.js';\n",
+    "gus/selftest.mjs": "import { isValidRegon, isValidNip, detectIdentifierType } from './regon.js';\nimport { parseDaneRecords, unescapeXml } from './xml.js';\nimport { normalizeEntity, isActive } from './verifyRegon.js';\n\nconst checks = [\n  ['REGON 9 GUS (000331501)', isValidRegon('000331501') === true],\n  ['REGON 9 PKO BP (016298263)', isValidRegon('016298263') === true],\n  ['REGON 9 z separatorami', isValidRegon('016-298-263') === true],\n  ['REGON 9 bledny', isValidRegon('016298264') === false],\n  ['REGON 14 (00033150100000)', isValidRegon('00033150100000') === true],\n  ['REGON 14 bledny', isValidRegon('00033150100001') === false],\n  ['NIP PKO BP (5250007738)', isValidNip('5250007738') === true],\n  ['NIP bledny', isValidNip('5250007739') === false],\n  ['detect nip', detectIdentifierType('5250007738') === 'nip'],\n  ['detect regon', detectIdentifierType('016298263') === 'regon'],\n  ['detect smiec', detectIdentifierType('123') === null],\n];\n\nconst xml = unescapeXml('&lt;root&gt;&lt;dane&gt;&lt;Regon&gt;016298263&lt;/Regon&gt;&lt;Nazwa&gt;PKO BP S.A.&lt;/Nazwa&gt;&lt;Typ&gt;P&lt;/Typ&gt;&lt;SilosID&gt;6&lt;/SilosID&gt;&lt;NrLokalu /&gt;&lt;/dane&gt;&lt;/root&gt;');\nconst records = parseDaneRecords(xml);\nchecks.push(['parse 1 rekord', records.length === 1]);\nchecks.push(['parse pole Nazwa', records[0].Nazwa === 'PKO BP S.A.']);\nchecks.push(['parse pusty tag', records[0].NrLokalu === '']);\n\nconst entity = normalizeEntity(records[0], {\n  praw_regon9: '016298263',\n  praw_nazwa: 'POWSZECHNA KASA OSZCZEDNOSCI BANK POLSKI SA',\n  praw_adSiedzKodPocztowy: '02515',\n  praw_adSiedzMiejscowosc_Nazwa: 'Warszawa',\n  praw_adSiedzUlica_Nazwa: 'ul. Pulawska',\n  praw_adSiedzNumerNieruchomosci: '15',\n  praw_dataZakonczeniaDzialalnosci: '',\n});\nchecks.push(['normalizacja nazwy', entity.name.startsWith('POWSZECHNA')]);\nchecks.push(['kod pocztowy 02-515', entity.address.postalCode === '02-515']);\nchecks.push(['ulica bez \"ul.\"', entity.address.street === 'Pulawska']);\nchecks.push(['aktywny', isActive(entity) === true]);\nchecks.push(['nieaktywny po dacie konca', isActive({ ...entity, endDate: '2020-01-01' }) === false]);\n\nlet failed = 0;\nfor (const [name, ok] of checks) {\n  if (!ok) failed++;\n  console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}`);\n}\nconsole.log(`\\n${checks.length - failed}/${checks.length} przeszlo`);\nprocess.exit(failed ? 1 : 0);\n"
+  },
+  "usage": {
+    "env": {
+      "GUS_API_KEY": "klucz uzytkownika BIR (produkcja)",
+      "GUS_ENV": "prod | test"
+    },
+    "quickStart": "import { verifyRegon } from './gus/index.js';\n\nconst result = await verifyRegon('016298263', {\n  apiKey: process.env.GUS_API_KEY,\n  environment: process.env.GUS_ENV ?? 'prod',\n});\n\n// { valid, found, active, identifierType, entity, error, raw }\nif (!result.valid) throw new Error(result.error);\nif (!result.found) console.log(result.error);\nelse console.log(result.entity.name, result.entity.address.city);",
+    "reuseSession": "import { GusClient, verifyRegon } from './gus/index.js';\n\nconst client = new GusClient({ apiKey: process.env.GUS_API_KEY });\nawait client.login();\ntry {\n  for (const id of identifiers) {\n    const r = await verifyRegon(id, { client }); // jedna sesja na wiele zapytan\n  }\n} finally {\n  await client.logout();\n}",
+    "offlineOnly": "import { isValidRegon, isValidNip } from './gus/regon.js';\n\nisValidRegon('016298263'); // true - bez wywolania sieciowego\nisValidNip('5250007738');  // true",
+    "selftest": "node gus/selftest.mjs"
+  },
+  "returnShape": {
+    "valid": "boolean - poprawny format i suma kontrolna (sprawdzane offline)",
+    "found": "boolean - podmiot istnieje w bazie GUS",
+    "active": "boolean|null - brak daty zakonczenia/skreslenia i brak trwajacego zawieszenia",
+    "identifierType": "'regon' | 'regon14' | 'nip' | 'krs' | null",
+    "entity": {
+      "regon": "string",
+      "nip": "string|null",
+      "nipStatus": "string|null",
+      "krs": "string|null",
+      "name": "string",
+      "shortName": "string|null",
+      "legalFormCode": "string|null",
+      "legalFormName": "string|null",
+      "pkdMain": "string|null",
+      "startDate": "YYYY-MM-DD|null",
+      "suspendedFrom": "YYYY-MM-DD|null",
+      "resumedFrom": "YYYY-MM-DD|null",
+      "endDate": "YYYY-MM-DD|null",
+      "deletionDate": "YYYY-MM-DD|null",
+      "address": {
+        "street": "string|null",
+        "buildingNo": "string|null",
+        "flatNo": "string|null",
+        "postalCode": "NN-NNN|null",
+        "city": "string|null",
+        "commune": "string|null",
+        "county": "string|null",
+        "voivodeship": "string|null",
+        "country": "string"
+      },
+      "type": "'P' | 'F' | 'LP' | 'LF' | null",
+      "silosId": "number|null"
+    },
+    "error": "string|null - komunikat bledu walidacji, wyszukiwania lub polaczenia",
+    "raw": "surowe rekordy z GUS: { summary, report } - na wypadek potrzeby pol nieobjetych normalizacja"
+  },
+  "notes": [
+    "Kod nie ma zadnych zaleznosci npm - dziala na globalnym fetch (Node 18+).",
+    "Wywolania musza isc z backendu: GUS nie wystawia naglowkow CORS, a klucz API nie moze trafic do przegladarki.",
+    "Walidacja sumy kontrolnej jest darmowym filtrem - odrzuca literowki zanim zuzyjesz limit zapytan do GUS.",
+    "ErrorCode 4 (nie znaleziono) jest zwracany jako found:false, a nie wyjatek - to normalny wynik biznesowy.",
+    "ErrorCode 2 (wygasla sesja) powoduje jednokrotne automatyczne ponowne logowanie i powtorzenie zapytania.",
+    "Pola raportu pelnego maja prefiksy (praw_, fiz_, lokpraw_, lokfiz_) - normalizeEntity je zdejmuje i ujednolica nazwy.",
+    "Testy offline (19 asercji) przechodza. Wywolania na zywo do stat.gov.pl nie zostaly zweryfikowane w tym srodowisku - polityka sieciowa kontenera zablokowala ten host (HTTP 403 na CONNECT)."
+  ]
+}
