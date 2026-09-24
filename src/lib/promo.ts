@@ -1,19 +1,28 @@
 /**
- * Zdjęcia promocyjne pokazywane na ekranie „Wniosek przyjęty" (losowo, przy każdej wizycie).
+ * Banery promocyjne pokazywane na ekranie „Wniosek przyjęty" (losowo, przy każdej wizycie).
  *
- * Aby dodać zdjęcie: wrzuć plik .jpg/.jpeg/.png/.webp/.avif do katalogu `src/lib/promo/`.
- * Wszystkie pliki z tego katalogu są wykrywane automatycznie w czasie budowania —
- * nie trzeba nic tu dopisywać ani utrzymywać listy nazw.
+ * Pliki leżą w `static/banery/` i mają stałe adresy (np. /banery/programista.png),
+ * bo z tych samych adresów pobierają je inne serwisy — nie zmieniaj nazw istniejących plików.
+ * Aby dodać baner: wrzuć plik do `static/banery/` i dopisz jego nazwę poniżej.
  */
-const moduly = import.meta.glob('./promo/*.{jpg,jpeg,png,webp,avif}', {
-	eager: true,
-	query: '?url',
-	import: 'default'
-});
+const BANERY = [
+	'programista.png',
+	'balerina.png',
+	'aktor.png',
+	'architekt.png',
+	'dentysta.png',
+	'przedsiebiorca.png',
+	'nurkowanie.png',
+	'jacht.png',
+	'narty.png',
+	'rodzina.png',
+	'podroze.png',
+	'dom.png'
+];
 
-export const PROMO: string[] = Object.values(moduly) as string[];
+export const PROMO: string[] = BANERY.map((plik) => `/banery/${plik}`);
 
-/** Losowe zdjęcie promocyjne albo null, gdy katalog jest pusty. */
+/** Losowe zdjęcie promocyjne albo null, gdy lista jest pusta. */
 export function losowePromo(): string | null {
 	if (PROMO.length === 0) return null;
 	return PROMO[Math.floor(Math.random() * PROMO.length)];
