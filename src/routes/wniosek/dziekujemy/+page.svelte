@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { losowePromo, type Promo } from '$lib/promo';
+	import { losowePromo } from '$lib/promo';
 
 	const nr = $derived(page.url.searchParams.get('nr') ?? '');
 	const email = $derived(page.url.searchParams.get('email') ?? 'twój adres e-mail');
 	const kompletny = $derived(page.url.searchParams.get('kompletny') === '1');
 
 	// losowanie w onMount (nie podczas SSR), by przy każdej wizycie zdjęcie było inne
-	let promo = $state<Promo | null>(null);
+	let promo = $state<string | null>(null);
 	onMount(() => {
 		promo = losowePromo();
 	});
@@ -56,8 +56,8 @@
 		</p>
 
 		{#if promo}
-			<a class="promo" href={promo.href} target="_blank" rel="noopener">
-				<img src={promo.src} alt="Ubezpieczenie od utraty dochodu — utratadochodu.pl" />
+			<a class="promo" href="https://utratadochodu.pl/?utm_source=partner&utm_medium=display&utm_campaign=permanentlink&utm_content=ergobranzowe&utm_term=wniosek" target="_blank" rel="noopener">
+				<img src={promo} alt="" />
 			</a>
 		{/if}
 

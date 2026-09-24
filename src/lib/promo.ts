@@ -11,29 +11,10 @@ const moduly = import.meta.glob('./promo/*.{jpg,jpeg,png,webp,avif}', {
 	import: 'default'
 });
 
-export type Promo = { src: string; href: string };
-
-/** './promo/utrata-dochodu-03-programista.png' → 'programista' */
-export function nazwaPromo(sciezka: string): string {
-	return sciezka
-		.replace(/^.*\//, '')
-		.replace(/\.[^.]+$/, '')
-		.replace(/^utrata-dochodu-/, '')
-		.replace(/^\d+-/, '');
-}
-
-/** Link banera; utm_content niesie nazwę grafiki, by w analityce było widać, która działa. */
-export function linkPromo(nazwa: string): string {
-	return `https://utratadochodu.pl/?utm_source=partner&utm_medium=display&utm_campaign=permanentlink&utm_content=ergobranzowe-${encodeURIComponent(nazwa)}&utm_term=wniosek`;
-}
-
-export const PROMO: Promo[] = Object.entries(moduly).map(([sciezka, src]) => ({
-	src: src as string,
-	href: linkPromo(nazwaPromo(sciezka))
-}));
+export const PROMO: string[] = Object.values(moduly) as string[];
 
 /** Losowe zdjęcie promocyjne albo null, gdy katalog jest pusty. */
-export function losowePromo(): Promo | null {
+export function losowePromo(): string | null {
 	if (PROMO.length === 0) return null;
 	return PROMO[Math.floor(Math.random() * PROMO.length)];
 }

@@ -3,9 +3,7 @@
 Wrzuć tutaj zdjęcia (`.jpg`, `.jpeg`, `.png`, `.webp`, `.avif`), które mają się
 pokazywać **losowo** na ekranie „Wniosek przyjęty" (`/wniosek/dziekujemy`),
 nad przyciskiem „Zacznij od nowa". Każde zdjęcie jest linkiem do
-<https://utratadochodu.pl> z UTM-ami (`linkPromo` w `src/lib/promo.ts`).
-`utm_content` to `ergobranzowe-` + nazwa pliku bez prefiksu `utrata-dochodu-NN-`
-i rozszerzenia, np. `utrata-dochodu-03-programista.png` → `ergobranzowe-programista`.
+<https://utratadochodu.pl>.
 
 Pliki są wykrywane automatycznie w czasie budowania (przez `src/lib/promo.ts`) —
 nie trzeba nigdzie dopisywać nazw. Wystarczy dodać plik do tego katalogu i
