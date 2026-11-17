@@ -1,0 +1,16 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "branzowe2",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_date": "2026-06-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"observability": {
+		"enabled": true
+	}
+	// Sekrety (wrangler secret put …): SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
+	// RESEND_API_KEY, MAIL_OD, MAIL_OPIEKUN, GUS_API_KEY
+}
