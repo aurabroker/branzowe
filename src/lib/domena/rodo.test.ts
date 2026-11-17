@@ -46,6 +46,28 @@ describe('zawieraPesel — siatka bezpieczeństwa RODO', () => {
 		expect(zawieraPesel(p)).toBe(false);
 	});
 
+	it('nie myli składki z błędem zaokrąglenia z PESEL-em', () => {
+		// beauty, 7 osób, dwie Mediopieki + Global Doctors, adopcja 35% —
+		// szacunek 750.2249999999999 dawał klientom 422 przy wysyłce wniosku
+		const p = { ...bazowy(), skladka_klienta: { min: 406, max: 1389.5, szacunek: 750.2249999999999 } };
+		expect(zawieraPesel(p)).toBe(false);
+	});
+
+	it('przepuszcza 14-cyfrowy REGON jednostki lokalnej', () => {
+		const p = { ...bazowy(), firma: { nip: '5252248481', nazwa: 'Gabinet', regon: '12345678901234' } };
+		expect(zawieraPesel(p)).toBe(false);
+	});
+
+	it('odrzuca PESEL wpisany w pole REGON', () => {
+		const p = { ...bazowy(), firma: { nip: '5252248481', nazwa: 'Gabinet', regon: '88010112345' } };
+		expect(zawieraPesel(p)).toBe(true);
+	});
+
+	it('odrzuca PESEL użyty jako klucz', () => {
+		const p = { ...bazowy(), zgody: { '88010112345': { wersja: '1' } } };
+		expect(zawieraPesel(p)).toBe(true);
+	});
+
 	it('działa na payloadzie bez kontaktu i bez źródła', () => {
 		expect(zawieraPesel({ cokolwiek: 'abc' })).toBe(false);
 		expect(zawieraPesel({ cokolwiek: '12345678901' })).toBe(true);
